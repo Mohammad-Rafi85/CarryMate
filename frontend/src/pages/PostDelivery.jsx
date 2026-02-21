@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
-import { Package, MapPin, DollarSign, Info, Weight } from 'lucide-react';
+import { Package, MapPin, DollarSign, Info, Weight, ArrowLeft, Tag } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const PostDelivery = () => {
@@ -35,70 +35,96 @@ const PostDelivery = () => {
     };
 
     return (
-        <div className="container" style={{ padding: '40px 20px', display: 'flex', justifyContent: 'center' }}>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-panel" style={{ width: '100%', maxWidth: '700px', padding: '40px' }}>
-                <h1 className="page-title" style={{ fontSize: '28px', textAlign: 'center' }}>Send an Item</h1>
+        <div className="min-h-screen bg-mesh pt-32 pb-20 px-6">
+            <div className="max-w-3xl mx-auto">
+                <Link to="/dashboard" className="inline-flex items-center gap-2 text-indigo-600 font-bold text-sm mb-8 hover:underline">
+                    <ArrowLeft size={16} /> Back to Dashboard
+                </Link>
 
-                <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                    <div className="input-group" style={{ gridColumn: 'span 2' }}>
-                        <label>Item Description</label>
-                        <div style={{ position: 'relative' }}>
-                            <Package size={18} style={{ position: 'absolute', left: '16px', top: '14px', color: 'var(--text-muted)' }} />
-                            <input type="text" name="itemDescription" placeholder="e.g. MacBook Pro 14 inch" style={{ paddingLeft: '45px' }} value={formData.itemDescription} onChange={handleChange} required />
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="glass-card p-10 md:p-14 bg-white/70 backdrop-blur-2xl border border-white"
+                >
+                    <div className="mb-10 text-center">
+                        <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 shadow-xl shadow-indigo-600/20">
+                            <Package size={32} />
                         </div>
+                        <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">Send an Item</h1>
+                        <p className="text-slate-500 font-medium tracking-tight whitespace-nowrap">Tell us what you're shipping and where it needs to go.</p>
                     </div>
 
-                    <div className="input-group">
-                        <label>Pickup Location</label>
-                        <div style={{ position: 'relative' }}>
-                            <MapPin size={18} style={{ position: 'absolute', left: '16px', top: '14px', color: 'var(--text-muted)' }} />
-                            <input type="text" name="pickupLocation" placeholder="City name" style={{ paddingLeft: '45px' }} value={formData.pickupLocation} onChange={handleChange} required />
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                        <div className="group relative transition-all duration-200">
+                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600">Item Description</label>
+                            <div className="relative">
+                                <Package size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600" />
+                                <input type="text" name="itemDescription" placeholder="e.g. MacBook Pro 14 inch" className="input-group pl-12" value={formData.itemDescription} onChange={handleChange} required />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="input-group">
-                        <label>Drop Location</label>
-                        <div style={{ position: 'relative' }}>
-                            <MapPin size={18} style={{ position: 'absolute', left: '16px', top: '14px', color: 'var(--text-muted)' }} />
-                            <input type="text" name="dropLocation" placeholder="City name" style={{ paddingLeft: '45px' }} value={formData.dropLocation} onChange={handleChange} required />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="group relative">
+                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600">Pickup City</label>
+                                <div className="relative">
+                                    <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600" />
+                                    <input type="text" name="pickupLocation" placeholder="San Francisco" className="input-group pl-12" value={formData.pickupLocation} onChange={handleChange} required />
+                                </div>
+                            </div>
+                            <div className="group relative">
+                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600">Drop-off City</label>
+                                <div className="relative">
+                                    <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600" />
+                                    <input type="text" name="dropLocation" placeholder="London" className="input-group pl-12" value={formData.dropLocation} onChange={handleChange} required />
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="input-group">
-                        <label>Weight (kg)</label>
-                        <div style={{ position: 'relative' }}>
-                            <Weight size={18} style={{ position: 'absolute', left: '16px', top: '14px', color: 'var(--text-muted)' }} />
-                            <input type="number" step="0.1" name="weightKg" placeholder="1.5" style={{ paddingLeft: '45px' }} value={formData.weightKg} onChange={handleChange} required />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="group relative">
+                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600">Est. Weight (kg)</label>
+                                <div className="relative">
+                                    <Weight size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600" />
+                                    <input type="number" step="0.1" name="weightKg" placeholder="1.5" className="input-group pl-12" value={formData.weightKg} onChange={handleChange} required />
+                                </div>
+                            </div>
+                            <div className="group relative">
+                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600">Category</label>
+                                <div className="relative">
+                                    <Tag size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 z-10" />
+                                    <select name="category" value={formData.category} onChange={handleChange} className="input-group pl-12 bg-white appearance-none relative z-0">
+                                        <option value="Electronics">Electronics</option>
+                                        <option value="Documents">Documents</option>
+                                        <option value="Clothing">Clothing</option>
+                                        <option value="Food">Food & Perisables</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="input-group">
-                        <label>Category</label>
-                        <select name="category" value={formData.category} onChange={handleChange} style={{ background: 'white', color: 'var(--text-main)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '12px 16px', width: '100%', outline: 'none' }}>
-                            <option value="Electronics" style={{ color: 'black' }}>Electronics</option>
-                            <option value="Documents" style={{ color: 'black' }}>Documents</option>
-                            <option value="Clothing" style={{ color: 'black' }}>Clothing</option>
-                            <option value="Food" style={{ color: 'black' }}>Food & Perisables</option>
-                            <option value="Other" style={{ color: 'black' }}>Other</option>
-                        </select>
-                    </div>
-
-                    <div className="input-group" style={{ gridColumn: 'span 2' }}>
-                        <label>Offer Amount ($)</label>
-                        <div style={{ position: 'relative' }}>
-                            <DollarSign size={18} style={{ position: 'absolute', left: '16px', top: '14px', color: 'var(--text-muted)' }} />
-                            <input type="number" name="escrowAmount" placeholder="Amount to be held in escrow" style={{ paddingLeft: '45px' }} value={formData.escrowAmount} onChange={handleChange} required />
+                        <div className="group relative py-6">
+                            <div className="bg-indigo-50/50 p-8 rounded-[24px] border border-indigo-100/50 transition-all duration-300 group-focus-within:bg-indigo-50">
+                                <label className="text-xs font-black text-indigo-400 uppercase tracking-widest ml-1 mb-4 block group-focus-within:text-indigo-600">Offer Amount ($)</label>
+                                <div className="relative mb-4">
+                                    <DollarSign size={24} className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-600" />
+                                    <input type="number" name="escrowAmount" placeholder="0.00" className="w-full bg-white text-2xl font-black text-slate-900 px-14 py-4 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none transition-all duration-200" value={formData.escrowAmount} onChange={handleChange} required />
+                                </div>
+                                <div className="flex items-start gap-3 p-4 bg-white/60 rounded-xl border border-white">
+                                    <Info size={16} className="text-indigo-600 shrink-0 mt-0.5" />
+                                    <p className="text-xs font-bold text-slate-400 leading-relaxed uppercase tracking-wide">
+                                        This amount will be placed in a secure escrow and released to the traveler only once you confirm delivery.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px' }}>
-                            <Info size={12} /> This amount will be deducted from your wallet and released to the traveler upon delivery completion.
-                        </p>
-                    </div>
 
-                    <button type="submit" className="btn-primary" style={{ gridColumn: 'span 2', justifyContent: 'center' }} disabled={loading}>
-                        {loading ? 'Posting...' : 'Post Delivery Request'}
-                    </button>
-                </form>
-            </motion.div>
+                        <button type="submit" className="btn-primary w-full py-5 text-lg shadow-2xl shadow-indigo-600/20" disabled={loading}>
+                            {loading ? 'Processing Shipment...' : 'Post Delivery Request'}
+                        </button>
+                    </form>
+                </motion.div>
+            </div>
         </div>
     );
 };

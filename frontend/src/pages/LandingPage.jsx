@@ -1,159 +1,166 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Package, Plane, Shield, Zap, Globe } from 'lucide-react';
+import { ArrowRight, Package, Plane, Shield, Zap, Globe, Users, Trophy, ChevronRight } from 'lucide-react';
 
 const LandingPage = () => {
     return (
-        <div style={{ background: 'var(--bg-page)', minHeight: '100vh', overflowX: 'hidden' }}>
+        <div className="bg-mesh min-h-screen">
             {/* Hero Section */}
-            <section style={{
-                padding: '120px 20px',
-                textAlign: 'center',
-                background: 'radial-gradient(circle at top right, var(--indigo-50), transparent), radial-gradient(circle at bottom left, #fff1f2, transparent)',
-                position: 'relative'
-            }}>
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    style={{ maxWidth: '900px', margin: '0 auto' }}
-                >
-                    <div style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '8px 20px',
-                        background: 'var(--indigo-50)',
-                        color: 'var(--primary)',
-                        borderRadius: '100px',
-                        fontSize: '13px',
-                        fontWeight: '700',
-                        marginBottom: '32px',
-                        border: '1px solid var(--indigo-100)'
-                    }}>
-                        <Zap size={14} fill="var(--primary)" /> Trusted by 10k+ users globally
-                    </div>
-                    <h1 style={{ fontSize: 'clamp(48px, 8vw, 84px)', fontWeight: '800', lineHeight: '1', color: 'var(--text-main)', marginBottom: '32px', letterSpacing: '-3px' }}>
-                        Ship smarter with <span style={{ color: 'var(--primary)' }}>CarryMate.</span>
-                    </h1>
-                    <p style={{ fontSize: '22px', color: 'var(--text-muted)', marginBottom: '48px', lineHeight: '1.6', maxWidth: '700px', margin: '0 auto 48px' }}>
-                        The peer-to-peer delivery network that connects travelers with people who need to ship items globally.
-                    </p>
+            <section className="relative pt-32 pb-20 px-6 overflow-hidden">
+                {/* Background Blobs */}
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[600px] h-[600px] bg-indigo-500/10 blur-[120px] rounded-full animate-pulse" />
+                <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[500px] h-[500px] bg-teal-500/10 blur-[100px] rounded-full animate-float" />
 
-                    <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                        <Link to="/register" className="btn-auth" style={{ width: 'auto', padding: '18px 40px', fontSize: '18px' }}>
-                            Start Shipping <ArrowRight size={20} />
-                        </Link>
-                        <Link to="/login" style={{
-                            padding: '18px 40px',
-                            fontSize: '18px',
-                            color: 'var(--text-main)',
-                            fontWeight: '700',
-                            textDecoration: 'none',
-                            border: '2px solid var(--border-color)',
-                            borderRadius: '12px',
-                            background: 'white',
-                            transition: 'all 0.2s'
-                        }}>
-                            Track Item
-                        </Link>
-                    </div>
-                </motion.div>
+                <div className="max-w-7xl mx-auto text-center relative z-10">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-bold border border-indigo-100 mb-8"
+                    >
+                        <Zap size={14} fill="currentColor" />
+                        <span>Reinventing Global Logistics</span>
+                    </motion.div>
 
-                {/* Floating Preview Image */}
-                <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.8 }}
-                    style={{ marginTop: '100px', maxWidth: '1100px', margin: '100px auto 0' }}
-                >
-                    <div style={{
-                        background: 'white',
-                        padding: '12px',
-                        borderRadius: '32px',
-                        boxShadow: '0 25px 60px rgba(15, 23, 42, 0.1)',
-                        border: '1.5px solid var(--border-color)'
-                    }}>
-                        <img
-                            src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=2070"
-                            alt="CarryMate Dashboard Area"
-                            style={{ width: '100%', borderRadius: '22px', display: 'block' }}
-                        />
-                    </div>
-                </motion.div>
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.1 }}
+                        className="text-6xl md:text-8xl font-black text-slate-900 tracking-tight leading-[0.9] mb-8"
+                    >
+                        Ship smarter with <br />
+                        <span className="gradient-text">CarryMate.</span>
+                    </motion.h1>
+
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="text-xl text-slate-500 max-w-2xl mx-auto mb-10 leading-relaxed"
+                    >
+                        The world's first peer-to-peer delivery network. Connect with travelers and ship items globally, faster and more sustainably than ever.
+                    </motion.p>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.3 }}
+                        className="flex flex-col sm:flex-row items-center justify-center gap-4"
+                    >
+                        <Link to="/register" className="btn-primary w-full sm:w-auto px-10 py-4 text-lg">
+                            Get Started Now <ArrowRight size={20} />
+                        </Link>
+                        <Link to="/login" className="btn-secondary w-full sm:w-auto px-10 py-4 text-lg">
+                            Track Shipment
+                        </Link>
+                    </motion.div>
+
+                    {/* Dashboard Preview */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 100 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, delay: 0.5, type: 'spring' }}
+                        className="mt-20 relative max-w-5xl mx-auto"
+                    >
+                        <div className="glass-card p-2 bg-white/40 ring-1 ring-slate-200 shadow-2xl overflow-hidden">
+                            <img
+                                src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=2070"
+                                alt="Platform Preview"
+                                className="w-full rounded-[20px] shadow-sm"
+                            />
+                            {/* Floating Stats */}
+                            <div className="absolute top-10 -right-8 glass-card p-6 hidden lg:block animate-float">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white">
+                                        <Trophy size={24} />
+                                    </div>
+                                    <div className="text-left">
+                                        <div className="text-2xl font-black text-slate-900">10k+</div>
+                                        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">Successful Mates</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
             </section>
 
-            {/* Features Grid */}
-            <section style={{ padding: '120px 20px', maxWidth: '1200px', margin: '0 auto' }}>
-                <div style={{ textAlign: 'center', marginBottom: '80px' }}>
-                    <h2 style={{ fontSize: '42px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '20px', letterSpacing: '-1.5px' }}>Delivery redefined.</h2>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '18px' }}>Why follow the old ways when you can ship with a mate?</p>
-                </div>
+            {/* Features Section */}
+            <section className="py-32 px-6">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-20">
+                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">Delivery Redefined.</h2>
+                        <p className="text-lg text-slate-500">Why wait weeks when you can ship with a mate?</p>
+                    </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px' }}>
-                    {[
-                        { icon: <Zap />, title: 'Lightning Speed', desc: 'Why wait weeks? Get your items delivered same-day or next-day on common travel routes.' },
-                        { icon: <Shield />, title: 'Trusted Escrow', desc: 'Secure payment system releases funds only when the item is safely delivered.' },
-                        { icon: <Globe />, title: 'Zero Boredom', desc: 'Meet incredible travelers and be part of a community-driven shipping revolution.' }
-                    ].map((feature, i) => (
-                        <div key={i} style={{
-                            padding: '40px',
-                            background: 'white',
-                            borderRadius: '24px',
-                            border: '1.5px solid var(--border-color)',
-                            transition: 'all 0.3s ease',
-                            cursor: 'default'
-                        }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--primary)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-color)'}>
-                            <div style={{ width: '56px', height: '56px', background: 'var(--indigo-50)', color: 'var(--primary)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '28px' }}>
-                                {feature.icon}
-                            </div>
-                            <h3 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '16px' }}>{feature.title}</h3>
-                            <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', fontSize: '15px' }}>{feature.desc}</p>
-                        </div>
-                    ))}
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {[
+                            { icon: <Zap />, title: 'Lightning Speed', desc: 'Same-day or next-day delivery on common travel routes between major cities.', color: 'indigo' },
+                            { icon: <Shield />, title: 'Trusted Escrow', desc: 'Secure payment system releases funds only after proof of successful delivery.', color: 'teal' },
+                            { icon: <Globe />, title: 'Green Logistics', desc: 'Zero extra carbon footprint by utilizing unused space in traveler luggage.', color: 'purple' }
+                        ].map((feature, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                                viewport={{ once: true }}
+                                className="group p-8 bg-white border border-slate-100 rounded-[32px] hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-2 transition-all duration-300"
+                            >
+                                <div className={`w-14 h-14 bg-${feature.color}-50 text-${feature.color}-600 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform`}>
+                                    {feature.icon}
+                                </div>
+                                <h3 className="text-2xl font-bold text-slate-900 mb-4">{feature.title}</h3>
+                                <p className="text-slate-500 leading-relaxed mb-6">{feature.desc}</p>
+                                <div className="flex items-center gap-2 text-indigo-600 font-bold text-sm cursor-pointer group/link">
+                                    Learn More <ChevronRight size={16} className="group-hover/link:translate-x-1 transition-transform" />
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
                 </div>
             </section>
 
             {/* CTA Section */}
-            <section style={{ padding: '80px 20px' }}>
-                <div style={{
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    background: 'var(--text-main)',
-                    borderRadius: '40px',
-                    padding: '80px 40px',
-                    textAlign: 'center',
-                    color: 'white',
-                    position: 'relative',
-                    overflow: 'hidden'
-                }}>
-                    <div style={{ position: 'relative', zIndex: 2 }}>
-                        <h2 style={{ fontSize: '48px', fontWeight: '800', marginBottom: '24px', letterSpacing: '-2px' }}>Ready to start?</h2>
-                        <p style={{ fontSize: '20px', opacity: 0.7, marginBottom: '48px', maxWidth: '600px', margin: '0 auto 48px' }}>Join thousands of members already shipping and traveling with CarryMate.</p>
-                        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
-                            <Link to="/register" className="btn-auth" style={{ width: 'auto', padding: '18px 48px', background: 'white', color: 'var(--text-main)', fontSize: '17px' }}>Join the community</Link>
+            <section className="pb-32 px-6">
+                <motion.div
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    viewport={{ once: true }}
+                    className="max-w-7xl mx-auto bg-slate-900 rounded-[48px] p-12 md:p-24 relative overflow-hidden text-center"
+                >
+                    {/* Decorative Background */}
+                    <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-500/20 blur-[100px] rounded-full" />
+                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/10 blur-[100px] rounded-full" />
+
+                    <div className="relative z-10">
+                        <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tight">Ready to join the <br /> <span className="text-indigo-400">logistics revolution?</span></h2>
+                        <p className="text-slate-400 text-xl max-w-2xl mx-auto mb-12">Join thousands of senders and travelers already saving time and money with CarryMate.</p>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <Link to="/register" className="btn-primary bg-white text-slate-900 hover:bg-slate-100 py-4 px-10 text-lg">Join Now</Link>
+                            <Link to="/login" className="border border-slate-700 text-white hover:bg-slate-800 rounded-xl py-4 px-10 font-bold transition-colors text-lg">Sign In</Link>
                         </div>
                     </div>
-                    {/* Decorative Circles */}
-                    <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '300px', height: '300px', borderRadius: '50%', background: 'rgba(79, 70, 229, 0.2)', filter: 'blur(60px)' }}></div>
-                    <div style={{ position: 'absolute', bottom: '-100px', left: '-100px', width: '300px', height: '300px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.1)', filter: 'blur(60px)' }}></div>
-                </div>
+                </motion.div>
             </section>
 
-            <footer style={{ padding: '80px 20px', color: 'var(--text-muted)', fontSize: '14px' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ width: '32px', height: '32px', background: 'var(--primary)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Package color="white" size={18} />
+            {/* Footer */}
+            <footer className="py-20 px-6 border-t border-slate-100 bg-white">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white">
+                            <Package size={16} />
                         </div>
-                        <span style={{ fontWeight: '800', color: 'var(--text-main)', fontSize: '20px', letterSpacing: '-0.5px' }}>CarryMate</span>
+                        <span className="text-xl font-black text-slate-900">CarryMate</span>
                     </div>
-                    <div style={{ display: 'flex', gap: '32px', fontWeight: '600' }}>
-                        <span>© 2024 Carry Mate Inc.</span>
-                        <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Privacy</a>
-                        <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Terms</a>
-                        <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Contact</a>
+                    <div className="flex gap-10 text-sm font-bold text-slate-400">
+                        <a href="#" className="hover:text-indigo-600 transition-colors">Privacy Policy</a>
+                        <a href="#" className="hover:text-indigo-600 transition-colors">Terms of Service</a>
+                        <a href="#" className="hover:text-indigo-600 transition-colors">Contact Us</a>
+                    </div>
+                    <div className="text-slate-400 text-sm font-medium italic">
+                        © 2024 Carry Mate Inc. Handcrafted for global citizens.
                     </div>
                 </div>
             </footer>

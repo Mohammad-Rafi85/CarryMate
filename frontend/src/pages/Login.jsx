@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
-import { Lock, ArrowRight, Chrome, Apple, Eye, EyeOff, Box, Plane } from 'lucide-react';
+import { Lock, AtSign, Eye, EyeOff, ArrowLeft, Package } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Login = () => {
@@ -29,7 +29,7 @@ const Login = () => {
         } catch (err) {
             console.error('Login error details:', err);
             if (!err.response) {
-                setError('Could not connect to the server. Please check if the backend is running on port 8080.');
+                setError('Could not connect to the server. Please check if the backend is running.');
             } else {
                 setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
             }
@@ -39,132 +39,96 @@ const Login = () => {
     };
 
     return (
-        <div className="auth-container">
-            {/* Left Sidebar - Hero Section */}
-            <div className="auth-sidebar">
-                <div style={{ position: 'absolute', top: '40px', left: '40px' }}>
-                    <div className="logo-container" style={{ margin: 0 }}>
-                        <div className="logo-icon">
-                            <Box color="var(--primary)" size={24} />
-                        </div>
-                        <span className="logo-text">Carry Mate</span>
-                    </div>
-                </div>
+        <div className="bg-mesh min-h-screen flex items-center justify-center p-6">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="w-full max-w-md bg-white p-10 md:p-12 shadow-2xl rounded-[40px] border border-slate-100 relative overflow-hidden"
+            >
+                {/* Decorative Elements */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-3xl rounded-full" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-teal-500/5 blur-3xl rounded-full" />
 
-                <div style={{ maxWidth: '600px' }}>
-                    <motion.h1
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="hero-title"
-                    >
-                        Welcome home, Mate.
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="hero-subtitle"
-                    >
-                        Sign in to manage your deliveries, track your trips, and connect with our global community.
-                    </motion.p>
-                </div>
+                <div className="relative z-10 text-center">
+                    <Link to="/" className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-bold text-sm mb-10 transition-colors">
+                        <ArrowLeft size={16} /> Back to explore
+                    </Link>
 
-                <div className="stat-grid">
-                    <div className="stat-card">
-                        <Box size={20} />
-                        <div>
-                            <div style={{ fontWeight: '700', fontSize: '16px' }}>50k+</div>
-                            <div style={{ opacity: 0.7, fontSize: '12px' }}>Items Delivered</div>
-                        </div>
-                    </div>
-                    <div className="stat-card">
-                        <Plane size={20} />
-                        <div>
-                            <div style={{ fontWeight: '700', fontSize: '16px' }}>10k+</div>
-                            <div style={{ opacity: 0.7, fontSize: '12px' }}>Verified Mates</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Right Side - Login Form */}
-            <div className="auth-content">
-                <div className="auth-form-wrapper">
-                    <div style={{ marginBottom: '32px' }}>
-                        <h2 style={{ fontSize: '32px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '8px' }}>Log In</h2>
-                        <p style={{ color: 'var(--text-muted)' }}>Enter your credentials to access your account.</p>
+                    <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 shadow-xl shadow-indigo-600/20">
+                        <Package size={32} />
                     </div>
 
-                    <div style={{ display: 'flex', gap: '16px', marginBottom: '32px' }}>
-                        <button className="social-btn">
-                            <Chrome size={20} /> Google
-                        </button>
-                        <button className="social-btn">
-                            <Apple size={20} /> Apple
-                        </button>
-                    </div>
-
-                    <div className="divider">or use username</div>
+                    <h2 className="text-4xl font-black text-slate-900 mb-2">Welcome Back.</h2>
+                    <p className="text-slate-500 font-medium mb-10 tracking-tight">Sign in to manage your shipments and trips.</p>
 
                     {error && (
-                        <div style={{ background: '#fef2f2', border: '1px solid #fee2e2', color: 'var(--danger)', padding: '12px', borderRadius: '12px', marginBottom: '20px', fontSize: '14px' }}>
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="p-4 bg-rose-50 text-rose-500 rounded-2xl border border-rose-100 text-xs font-bold mb-8 text-left"
+                        >
                             {error}
-                        </div>
+                        </motion.div>
                     )}
 
-                    <form onSubmit={handleSubmit}>
-                        <div style={{ marginBottom: '20px' }}>
-                            <label style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-main)' }}>Username</label>
-                            <input
-                                type="text"
-                                name="username"
-                                className="input-field"
-                                placeholder="mate_2024"
-                                value={credentials.username}
-                                onChange={handleChange}
-                                required
-                            />
+                    <form onSubmit={handleSubmit} className="space-y-6 text-left">
+                        <div className="group relative">
+                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600 transition-colors">Username</label>
+                            <div className="relative">
+                                <AtSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                                <input
+                                    type="text"
+                                    name="username"
+                                    className="input-group pl-12"
+                                    placeholder="your_username"
+                                    value={credentials.username}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
                         </div>
 
-                        <div style={{ marginBottom: '24px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <label style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-main)' }}>Password</label>
-                                <a href="#" style={{ fontSize: '12px', fontWeight: '700', color: 'var(--primary)', textDecoration: 'none' }}>Forgot password?</a>
+                        <div className="group relative">
+                            <div className="flex justify-between items-center mb-2">
+                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 group-focus-within:text-indigo-600 transition-colors">Password</label>
+                                <Link to="#" className="text-[11px] font-bold text-indigo-600 hover:underline">Forgot?</Link>
                             </div>
-                            <div style={{ position: 'relative' }}>
+                            <div className="relative">
+                                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     name="password"
-                                    className="input-field"
+                                    className="input-group pl-12 pr-12"
                                     placeholder="••••••••"
                                     value={credentials.password}
                                     onChange={handleChange}
                                     required
                                 />
-                                <div
+                                <button
+                                    type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    style={{ position: 'absolute', right: '16px', top: '18px', cursor: 'pointer', color: 'var(--text-muted)' }}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
                                 >
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                </div>
+                                </button>
                             </div>
                         </div>
 
                         <button
                             type="submit"
-                            className="btn-auth"
+                            className="btn-primary w-full py-4 text-base mt-2 shadow-2xl shadow-indigo-600/20"
                             disabled={loading}
                         >
-                            {loading ? 'Signing in...' : <>Sign In <ArrowRight size={20} /></>}
+                            {loading ? 'Authenticating...' : 'Sign In to CarryMate'}
                         </button>
                     </form>
 
-                    <div style={{ textAlign: 'center', marginTop: '32px', fontSize: '15px' }}>
-                        <span style={{ color: 'var(--text-muted)' }}>New to CarryMate? </span>
-                        <Link to="/register" style={{ color: 'var(--primary)', fontWeight: '700', textDecoration: 'none' }}>Join our community</Link>
+                    <div className="mt-10 text-sm font-bold">
+                        <span className="text-slate-400">New around here? </span>
+                        <Link to="/register" className="text-indigo-600 hover:text-indigo-700 underline decoration-2 underline-offset-4">Create Account</Link>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 };

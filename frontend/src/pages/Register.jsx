@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
-import { User, Mail, Lock, Chrome, Facebook, Box, Plane, Eye, EyeOff, AtSign } from 'lucide-react';
+import { User, Mail, Lock, Box, Plane, Eye, EyeOff, AtSign, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Register = () => {
@@ -10,7 +10,7 @@ const Register = () => {
         email: '',
         password: '',
         fullName: '',
-        userType: 'SENDER' // Add default
+        userType: 'SENDER'
     });
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
@@ -33,13 +33,12 @@ const Register = () => {
         try {
             console.log('Attempting registration with:', formData);
             const response = await api.post('/auth/signup', formData);
-            console.log('Registration success:', response.data);
             setSuccess('Registration successful! Redirecting to login...');
             setTimeout(() => navigate('/login'), 2000);
         } catch (err) {
             console.error('Registration error details:', err);
             if (!err.response) {
-                setError('Could not connect to the server. Please check if the backend is running on port 8080.');
+                setError('Could not connect to the server. Please check if the backend is running.');
             } else {
                 setError(err.response?.data?.message || 'Registration failed. Try again.');
             }
@@ -49,160 +48,141 @@ const Register = () => {
     };
 
     return (
-        <div className="auth-container">
-            {/* Left Sidebar - Hero Section */}
-            <div className="auth-sidebar">
-                <div style={{ position: 'absolute', top: '40px', left: '40px' }}>
-                    <div className="logo-container" style={{ margin: 0 }}>
-                        <div className="logo-icon">
-                            <Box color="var(--primary)" size={24} />
-                        </div>
-                        <span className="logo-text">Carry Mate</span>
-                    </div>
-                </div>
+        <div className="bg-mesh min-h-screen flex items-center justify-center p-6 pt-24">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full max-w-5xl flex flex-col md:flex-row shadow-2xl rounded-[40px] overflow-hidden bg-white/40 ring-1 ring-white/50 backdrop-blur-2xl"
+            >
+                {/* Left Side - Info */}
+                <div className="md:w-[45%] bg-indigo-600 p-12 text-white flex flex-col relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/30 blur-[60px] rounded-full translate-x-1/2 -translate-y-1/2" />
 
-                <div style={{ maxWidth: '600px', marginBottom: '60px' }}>
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="hero-title"
-                    >
-                        Start your journey with us.
-                    </motion.h1>
-                    <p className="hero-subtitle">
-                        Whether you're shipping across the sea or flying over it, CarryMate is your partner in global logistics.
-                    </p>
-                </div>
+                    <Link to="/" className="flex items-center gap-2 text-indigo-100/70 hover:text-white transition-colors mb-20 relative z-10 w-fit">
+                        <ArrowLeft size={18} /> Back to home
+                    </Link>
 
-                <div className="stat-grid">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="stat-card"
-                    >
-                        <Plane size={20} />
-                        <div>
-                            <div style={{ fontWeight: '700', fontSize: '15px' }}>Verified Mates</div>
-                            <div style={{ fontSize: '12px', opacity: 0.8 }}>Trusted Community</div>
-                        </div>
-                    </motion.div>
-                </div>
+                    <div className="relative z-10">
+                        <h1 className="text-5xl font-black tracking-tight leading-tight mb-6">Join the global <br /> community.</h1>
+                        <p className="text-indigo-100 text-lg leading-relaxed mb-12">Whether you're shipping across the world or traveling across cities, CarryMate makes it seamless.</p>
 
-                <div style={{ marginTop: 'auto', display: 'flex', gap: '24px', opacity: 0.6, fontSize: '12px' }}>
-                    <span>© 2024 Carry Mate Inc.</span>
-                </div>
-            </div>
-
-            {/* Right Side - Register Form */}
-            <div className="auth-content">
-                <div className="auth-form-wrapper" style={{ maxWidth: '500px' }}>
-                    <div style={{ marginBottom: '32px' }}>
-                        <h2 style={{ fontSize: '32px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '8px' }}>Create Account</h2>
-                        <p style={{ color: 'var(--text-muted)' }}>Sign up to start shipping or traveling.</p>
-                    </div>
-
-                    {error && <div style={{ background: '#fef2f2', border: '1px solid #fee2e2', color: 'var(--danger)', padding: '12px', borderRadius: '12px', marginBottom: '20px', fontSize: '14px' }}>{error}</div>}
-                    {success && <div style={{ background: '#ecfdf5', border: '1px solid #d1fae5', color: 'var(--success)', padding: '12px', borderRadius: '12px', marginBottom: '20px', fontSize: '14px' }}>{success}</div>}
-
-                    <div style={{ marginBottom: '32px' }}>
-                        <label style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-main)', display: 'block', marginBottom: '12px' }}>I want to be a:</label>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                            <div
-                                onClick={() => handleTypeSelect('SENDER')}
-                                style={{
-                                    padding: '20px',
-                                    borderRadius: '16px',
-                                    border: `2px solid ${formData.userType === 'SENDER' ? 'var(--primary)' : 'var(--border-color)'}`,
-                                    background: formData.userType === 'SENDER' ? 'var(--indigo-50)' : 'white',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s',
-                                    textAlign: 'center'
-                                }}
-                            >
-                                <Box size={24} color={formData.userType === 'SENDER' ? 'var(--primary)' : 'var(--text-muted)'} style={{ marginBottom: '8px' }} />
-                                <div style={{ fontWeight: '700', color: formData.userType === 'SENDER' ? 'var(--primary)' : 'var(--text-main)' }}>Sender</div>
-                                <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>I have items to send</div>
-                            </div>
-
-                            <div
-                                onClick={() => handleTypeSelect('TRAVELER')}
-                                style={{
-                                    padding: '20px',
-                                    borderRadius: '16px',
-                                    border: `2px solid ${formData.userType === 'TRAVELER' ? 'var(--primary)' : 'var(--border-color)'}`,
-                                    background: formData.userType === 'TRAVELER' ? 'var(--indigo-50)' : 'white',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s',
-                                    textAlign: 'center'
-                                }}
-                            >
-                                <Plane size={24} color={formData.userType === 'TRAVELER' ? 'var(--primary)' : 'var(--text-muted)'} style={{ marginBottom: '8px' }} />
-                                <div style={{ fontWeight: '700', color: formData.userType === 'TRAVELER' ? 'var(--primary)' : 'var(--text-main)' }}>Traveler</div>
-                                <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>I am traveling soon</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <form onSubmit={handleSubmit}>
-                        <div style={{ marginBottom: '16px' }}>
-                            <label style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-main)' }}>Full Name</label>
-                            <div style={{ position: 'relative' }}>
-                                <User size={18} style={{ position: 'absolute', left: '16px', top: '22px', color: 'var(--text-muted)' }} />
-                                <input type="text" name="fullName" className="input-field" style={{ paddingLeft: '48px' }} placeholder="John Doe" value={formData.fullName} onChange={handleChange} required />
-                            </div>
-                        </div>
-
-                        <div style={{ marginBottom: '16px' }}>
-                            <label style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-main)' }}>Username</label>
-                            <div style={{ position: 'relative' }}>
-                                <AtSign size={18} style={{ position: 'absolute', left: '16px', top: '22px', color: 'var(--text-muted)' }} />
-                                <input type="text" name="username" className="input-field" style={{ paddingLeft: '48px' }} placeholder="johndoe123" value={formData.username} onChange={handleChange} required />
-                            </div>
-                        </div>
-
-                        <div style={{ marginBottom: '16px' }}>
-                            <label style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-main)' }}>Email Address</label>
-                            <div style={{ position: 'relative' }}>
-                                <Mail size={18} style={{ position: 'absolute', left: '16px', top: '22px', color: 'var(--text-muted)' }} />
-                                <input type="email" name="email" className="input-field" style={{ paddingLeft: '48px' }} placeholder="john@example.com" value={formData.email} onChange={handleChange} required />
-                            </div>
-                        </div>
-
-                        <div style={{ marginBottom: '24px' }}>
-                            <label style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-main)' }}>Password</label>
-                            <div style={{ position: 'relative' }}>
-                                <Lock size={18} style={{ position: 'absolute', left: '16px', top: '22px', color: 'var(--text-muted)' }} />
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    name="password"
-                                    className="input-field"
-                                    style={{ paddingLeft: '48px' }}
-                                    placeholder="••••••••"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    required
-                                />
-                                <div
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    style={{ position: 'absolute', right: '16px', top: '20px', cursor: 'pointer', color: 'var(--text-muted)' }}
+                        <div className="space-y-6">
+                            {[
+                                { icon: <Box size={18} />, text: 'Over 10,000 active senders' },
+                                { icon: <Plane size={18} />, text: 'Verified travel mates globally' },
+                                { icon: <User size={18} />, text: 'Join for free and start saving' }
+                            ].map((item, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.4 + (i * 0.1) }}
+                                    className="flex items-center gap-4 text-indigo-100/90 text-sm font-bold"
                                 >
-                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">{item.icon}</div>
+                                    {item.text}
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mt-auto relative z-10 text-xs font-bold text-indigo-200 uppercase tracking-widest">
+                        Handcrafted by CarryMate Inc.
+                    </div>
+                </div>
+
+                {/* Right Side - Form */}
+                <div className="flex-1 bg-white p-12 md:p-16">
+                    <div className="max-w-md mx-auto">
+                        <div className="mb-10 text-center md:text-left">
+                            <h2 className="text-3xl font-black text-slate-900 mb-2">Create Account</h2>
+                            <p className="text-slate-500 font-medium tracking-tight">Set up your profile to start your journey.</p>
+                        </div>
+
+                        {error && <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} className="p-4 bg-rose-50 text-rose-500 rounded-2xl border border-rose-100 text-sm font-bold mb-6">{error}</motion.div>}
+                        {success && <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} className="p-4 bg-emerald-50 text-emerald-600 rounded-2xl border border-emerald-100 text-sm font-bold mb-6">{success}</motion.div>}
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            {/* Role Selection */}
+                            <div className="grid grid-cols-2 gap-4 mb-8">
+                                <button
+                                    type="button"
+                                    onClick={() => handleTypeSelect('SENDER')}
+                                    className={`p-5 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center gap-2 group ${formData.userType === 'SENDER' ? 'border-indigo-600 bg-indigo-50 shadow-lg shadow-indigo-600/10' : 'border-slate-100 hover:border-slate-200 bg-white'}`}
+                                >
+                                    <Box size={24} className={formData.userType === 'SENDER' ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600'} />
+                                    <span className={`text-sm font-black ${formData.userType === 'SENDER' ? 'text-indigo-600' : 'text-slate-600'}`}>Sender</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleTypeSelect('TRAVELER')}
+                                    className={`p-5 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center gap-2 group ${formData.userType === 'TRAVELER' ? 'border-indigo-600 bg-indigo-50 shadow-lg shadow-indigo-600/10' : 'border-slate-100 hover:border-slate-200 bg-white'}`}
+                                >
+                                    <Plane size={24} className={formData.userType === 'TRAVELER' ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600'} />
+                                    <span className={`text-sm font-black ${formData.userType === 'TRAVELER' ? 'text-indigo-600' : 'text-slate-600'}`}>Traveler</span>
+                                </button>
+                            </div>
+
+                            <div className="relative group">
+                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600 transition-colors">Full Name</label>
+                                <div className="relative">
+                                    <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                                    <input type="text" name="fullName" className="input-group pl-12" placeholder="Johnathan Doe" value={formData.fullName} onChange={handleChange} required />
                                 </div>
                             </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="relative group">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600 transition-colors">Username</label>
+                                    <div className="relative">
+                                        <AtSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                                        <input type="text" name="username" className="input-group pl-12" placeholder="johndoe" value={formData.username} onChange={handleChange} required />
+                                    </div>
+                                </div>
+                                <div className="relative group">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600 transition-colors">Email</label>
+                                    <div className="relative">
+                                        <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                                        <input type="email" name="email" className="input-group pl-12" placeholder="john@mate.com" value={formData.email} onChange={handleChange} required />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="relative group">
+                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600 transition-colors">Password</label>
+                                <div className="relative">
+                                    <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        name="password"
+                                        className="input-group pl-12 pr-12"
+                                        placeholder="••••••••"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" className="btn-primary w-full py-4 text-base mt-4 shadow-xl shadow-indigo-600/20" disabled={loading}>
+                                {loading ? 'Creating Account...' : 'Continue to Dashboard'}
+                            </button>
+                        </form>
+
+                        <div className="mt-8 text-center sm:text-left text-sm font-bold">
+                            <span className="text-slate-400">Already have an account? </span>
+                            <Link to="/login" className="text-indigo-600 hover:text-indigo-700 underline decoration-2 underline-offset-4">Log In</Link>
                         </div>
-
-                        <button type="submit" className="btn-auth" style={{ marginBottom: '24px' }} disabled={loading}>
-                            {loading ? 'Creating account...' : 'Create Account'}
-                        </button>
-                    </form>
-
-                    <div style={{ textAlign: 'center', fontSize: '15px' }}>
-                        <span style={{ color: 'var(--text-muted)' }}>Already a member? </span>
-                        <Link to="/login" style={{ color: 'var(--primary)', fontWeight: '700', textDecoration: 'none' }}>Log In</Link>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 };
