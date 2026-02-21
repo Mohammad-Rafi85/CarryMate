@@ -9,8 +9,28 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,
     full_name VARCHAR(100),
     role ENUM('USER', 'ADMIN') DEFAULT 'USER',
+    user_type ENUM('SENDER', 'TRAVELER') DEFAULT 'SENDER',
     wallet_balance DECIMAL(10, 2) DEFAULT 0.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Separate details for Senders
+CREATE TABLE sender_profiles (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNIQUE NOT NULL,
+    default_pickup_address VARCHAR(255),
+    rating_as_sender DECIMAL(3, 2) DEFAULT 0.0,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Separate details for Travelers
+CREATE TABLE traveler_profiles (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNIQUE NOT NULL,
+    passport_verified BOOLEAN DEFAULT FALSE,
+    rating_as_traveler DECIMAL(3, 2) DEFAULT 0.0,
+    preferred_currency VARCHAR(10) DEFAULT 'USD',
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE deliveries (

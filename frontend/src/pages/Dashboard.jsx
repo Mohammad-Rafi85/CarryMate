@@ -83,7 +83,7 @@ const Dashboard = () => {
                                     <MapPin size={16} /> {delivery.pickupLocation} → {delivery.dropLocation}
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--glass-border)', paddingTop: '15px' }}>
-                                    <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Category: <span style={{ color: 'white' }}>{delivery.category}</span></div>
+                                    <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Category: <span style={{ color: 'var(--text-main)', fontWeight: '600' }}>{delivery.category}</span></div>
                                     <div style={{ fontWeight: '700', color: 'var(--primary)' }}>${delivery.escrowAmount}</div>
                                 </div>
                             </motion.div>
@@ -101,12 +101,12 @@ const Dashboard = () => {
                             <div className="glass-panel" style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)' }}>No trips posted yet.</div>
                         ) : trips.map(trip => (
                             <motion.div key={trip.id} whileHover={{ scale: 1.01 }} className="glass-panel" style={{ padding: '20px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'white', fontWeight: '700', fontSize: '18px', marginBottom: '10px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-main)', fontWeight: '700', fontSize: '18px', marginBottom: '10px' }}>
                                     <MapPin size={18} color="var(--primary)" /> {trip.startPoint} → {trip.endPoint}
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Date: <span style={{ color: 'white' }}>{trip.travelDate}</span></div>
-                                    <div style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Capacity: <span style={{ color: 'white' }}>{trip.availableCapacityKg}kg</span></div>
+                                    <div style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Date: <span style={{ color: 'var(--text-main)', fontWeight: '600' }}>{trip.travelDate}</span></div>
+                                    <div style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Capacity: <span style={{ color: 'var(--text-main)', fontWeight: '600' }}>{trip.availableCapacityKg}kg</span></div>
                                 </div>
                             </motion.div>
                         ))}

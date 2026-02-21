@@ -74,12 +74,12 @@ const PostDelivery = () => {
 
                     <div className="input-group">
                         <label>Category</label>
-                        <select name="category" value={formData.category} onChange={handleChange} style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'white', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '12px 16px' }}>
-                            <option value="Electronics">Electronics</option>
-                            <option value="Documents">Documents</option>
-                            <option value="Clothing">Clothing</option>
-                            <option value="Food">Food & Perisables</option>
-                            <option value="Other">Other</option>
+                        <select name="category" value={formData.category} onChange={handleChange} style={{ background: 'white', color: 'var(--text-main)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '12px 16px', width: '100%', outline: 'none' }}>
+                            <option value="Electronics" style={{ color: 'black' }}>Electronics</option>
+                            <option value="Documents" style={{ color: 'black' }}>Documents</option>
+                            <option value="Clothing" style={{ color: 'black' }}>Clothing</option>
+                            <option value="Food" style={{ color: 'black' }}>Food & Perisables</option>
+                            <option value="Other" style={{ color: 'black' }}>Other</option>
                         </select>
                     </div>
 

@@ -32,11 +32,18 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+
     private BigDecimal walletBalance = BigDecimal.ZERO;
 
     private LocalDateTime createdAt = LocalDateTime.now();
     
     public enum Role {
         USER, ADMIN
+    }
+
+    public enum UserType {
+        SENDER, TRAVELER
     }
 }

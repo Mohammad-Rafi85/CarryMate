@@ -32,6 +32,12 @@ public class AuthController {
     UserRepository userRepository;
 
     @Autowired
+    com.carrymate.repository.SenderProfileRepository senderProfileRepository;
+
+    @Autowired
+    com.carrymate.repository.TravelerProfileRepository travelerProfileRepository;
+
+    @Autowired
     PasswordEncoder encoder;
 
     @Autowired
@@ -79,8 +85,21 @@ public class AuthController {
         user.setPassword(encoder.encode(signUpRequest.getPassword()));
         user.setFullName(signUpRequest.getFullName());
         user.setRole(User.Role.USER);
+        
+        try {
+            user.setUserType(User.UserType.valueOf(signUpRequest.getUserType().toUpperCase()));
+        } catch (Exception e) {
+            user.setUserType(User.UserType.SENDER); // Default
+        }
 
         userRepository.save(user);
+
+        // Save detailed profile separately
+        if (user.getUserType() == User.UserType.SENDER) {
+            senderProfileRepository.save(new com.carrymate.entity.SenderProfile(user));
+        } else if (user.getUserType() == User.UserType.TRAVELER) {
+            travelerProfileRepository.save(new com.carrymate.entity.TravelerProfile(user));
+        }
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }

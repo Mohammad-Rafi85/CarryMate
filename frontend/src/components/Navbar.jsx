@@ -1,71 +1,101 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, User, Package, MapPin, LayoutDashboard } from 'lucide-react';
+import { LogOut, User, Package, MapPin, LayoutDashboard, Menu } from 'lucide-react';
 
 const Navbar = () => {
     const { isAuthenticated, user, logout } = useAuth();
     const navigate = useNavigate();
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const handleLogout = () => {
         logout();
-        navigate('/login');
+        navigate('/');
     };
 
     return (
-        <nav className="glass-panel" style={{ margin: '20px', padding: '15px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderRadius: '16px' }}>
-            <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '40px', height: '40px', background: 'linear-gradient(135deg, #00d2ff, #3a7bd5)', borderRadius: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Package color="white" size={24} />
+        <nav style={{
+            padding: scrolled ? '12px 40px' : '20px 40px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            position: 'sticky',
+            top: 0,
+            zIndex: 1000,
+            background: scrolled ? 'rgba(255, 255, 255, 0.8)' : 'transparent',
+            backdropFilter: scrolled ? 'blur(20px)' : 'none',
+            borderBottom: scrolled ? '1px solid var(--border-color)' : 'none',
+            transition: 'all 0.3s ease'
+        }}>
+            <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ width: '36px', height: '36px', background: 'var(--primary)', borderRadius: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Package color="white" size={20} />
                 </div>
-                <span style={{ fontSize: '24px', fontWeight: '800', color: 'white' }}>CarryMate</span>
+                <span style={{ fontSize: '22px', fontWeight: '800', color: scrolled ? 'var(--text-main)' : (window.location.pathname === '/' ? 'var(--text-main)' : 'var(--text-main)'), letterSpacing: '-0.5px' }}>CarryMate</span>
             </Link>
 
-            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
                 {isAuthenticated ? (
                     <>
-                        <Link to="/dashboard" className="nav-link"><LayoutDashboard size={20} /> Dashboard</Link>
-                        <Link to="/post-delivery" className="nav-link"><Package size={20} /> Send Item</Link>
-                        <Link to="/post-trip" className="nav-link"><MapPin size={20} /> Post Trip</Link>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginLeft: '10px', borderLeft: '1px solid var(--glass-border)', paddingLeft: '20px' }}>
+                        <Link to="/dashboard" className="nav-link">Dashboard</Link>
+                        <Link to="/post-delivery" className="nav-link">Send Item</Link>
+                        <Link to="/post-trip" className="nav-link">Post Trip</Link>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginLeft: '8px', paddingLeft: '24px', borderLeft: '1px solid var(--border-color)' }}>
                             <div style={{ textAlign: 'right' }}>
-                                <div style={{ fontSize: '14px', fontWeight: '600' }}>{user.username}</div>
-                                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{user.roles[0]}</div>
+                                <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-main)' }}>{user.username}</div>
+                                <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{user.roles?.[0]}</div>
                             </div>
-                            <button onClick={handleLogout} className="btn-icon" title="Logout"><LogOut size={20} /></button>
+                            <button onClick={handleLogout} className="logout-btn" title="Logout">
+                                <LogOut size={18} />
+                            </button>
                         </div>
                     </>
                 ) : (
                     <>
-                        <Link to="/login" style={{ color: 'white', textDecoration: 'none', fontWeight: '600' }}>Login</Link>
-                        <Link to="/register" className="btn-primary" style={{ padding: '8px 20px' }}>Register</Link>
+                        <Link to="/login" style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: '700', fontSize: '15px', transition: 'color 0.2s' }}>Login</Link>
+                        <Link to="/register" className="btn-auth" style={{ width: 'auto', padding: '10px 24px', fontSize: '14px' }}>
+                            Get Started
+                        </Link>
                     </>
                 )}
             </div>
             <style>{`
-        .nav-link {
-          color: var(--text-muted);
-          text-decoration: none;
-          font-weight: 500;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          transition: color 0.3s;
-        }
-        .nav-link:hover {
-          color: white;
-        }
-        .btn-icon {
-          background: none;
-          border: none;
-          color: var(--text-muted);
-          cursor: pointer;
-          transition: color 0.3s;
-        }
-        .btn-icon:hover {
-          color: var(--danger);
-        }
-      `}</style>
+                .nav-link {
+                    color: var(--text-muted);
+                    text-decoration: none;
+                    font-weight: 600;
+                    font-size: 14px;
+                    transition: all 0.2s;
+                }
+                .nav-link:hover {
+                    color: var(--primary);
+                }
+                .logout-btn {
+                    background: #fee2e2;
+                    border: none;
+                    color: #ef4444;
+                    padding: 8px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s;
+                }
+                .logout-btn:hover {
+                    background: #ef4444;
+                    color: white;
+                }
+            `}</style>
         </nav>
     );
 };

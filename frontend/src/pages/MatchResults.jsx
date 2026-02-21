@@ -80,7 +80,7 @@ const MatchResults = () => {
                             </div>
 
                             <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '20px', borderTop: '1px solid var(--glass-border)', paddingTop: '15px' }}>
-                                Weight: <span style={{ color: 'white' }}>{delivery.weightKg}kg</span> | Category: <span style={{ color: 'white' }}>{delivery.category}</span>
+                                Weight: <span style={{ color: 'var(--text-main)', fontWeight: '600' }}>{delivery.weightKg}kg</span> | Category: <span style={{ color: 'var(--text-main)', fontWeight: '600' }}>{delivery.category}</span>
                             </div>
 
                             <button onClick={() => handleMatch(delivery.id)} className="btn-primary" style={{ width: '100%', justifyContent: 'center' }}>

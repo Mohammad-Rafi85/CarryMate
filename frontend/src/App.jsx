@@ -10,6 +10,8 @@ import PostTrip from './pages/PostTrip';
 import MatchResults from './pages/MatchResults';
 import './App.css';
 
+import LandingPage from './pages/LandingPage';
+
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
@@ -27,13 +29,14 @@ function App() {
           <Navbar />
           <main>
             <Routes>
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/post-delivery" element={<ProtectedRoute><PostDelivery /></ProtectedRoute>} />
               <Route path="/post-trip" element={<ProtectedRoute><PostTrip /></ProtectedRoute>} />
               <Route path="/find-deliveries" element={<ProtectedRoute><MatchResults /></ProtectedRoute>} />
-              <Route path="/" element={<Navigate to="/dashboard" />} />
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </main>
         </div>
