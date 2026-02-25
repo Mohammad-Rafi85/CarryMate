@@ -19,6 +19,16 @@ public class DeliveryController {
     @Autowired
     private DeliveryService deliveryService;
 
+    @Autowired
+    private com.carrymate.repository.DeliveryRepository deliveryRepository;
+
+    @GetMapping
+    public ResponseEntity<List<DeliveryResponse>> getAllPendingDeliveries() {
+        List<DeliveryResponse> deliveries = deliveryRepository.findByStatus(com.carrymate.entity.Delivery.Status.PENDING)
+                .stream().map(DeliveryResponse::new).collect(Collectors.toList());
+        return ResponseEntity.ok(deliveries);
+    }
+
     @PostMapping
     public ResponseEntity<DeliveryResponse> createDelivery(@RequestBody PostDeliveryRequest request) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

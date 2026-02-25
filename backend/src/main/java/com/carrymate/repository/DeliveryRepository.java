@@ -8,4 +8,5 @@ import java.util.List;
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
     List<Delivery> findBySender(User sender);
     List<Delivery> findByTraveler(User traveler);
+    List<Delivery> findByStatus(Delivery.Status status);
 }

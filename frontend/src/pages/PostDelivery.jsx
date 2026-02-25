@@ -1,129 +1,200 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
-import { Package, MapPin, DollarSign, Info, Weight, ArrowLeft, Tag } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Package, MapPin, Weight, CreditCard, ArrowLeft, Shield, Info, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const PostDelivery = () => {
     const [formData, setFormData] = useState({
+        itemDescription: '',
+        category: 'ELECTRONICS',
+        weightKg: '',
         pickupLocation: '',
         dropLocation: '',
-        itemDescription: '',
-        weightKg: '',
-        category: 'Electronics',
         escrowAmount: ''
     });
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError('');
         try {
-            await api.post('/deliveries', formData);
-            navigate('/dashboard');
+            await api.post('/deliveries/request', formData);
+            setSuccess(true);
+            setTimeout(() => navigate('/dashboard'), 2000);
         } catch (err) {
-            console.error(err);
-            alert('Failed to post delivery request');
+            setError('Failed to post delivery request. Please check all fields.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-mesh pt-32 pb-20 px-6">
-            <div className="max-w-3xl mx-auto">
-                <Link to="/dashboard" className="inline-flex items-center gap-2 text-indigo-600 font-bold text-sm mb-8 hover:underline">
-                    <ArrowLeft size={16} /> Back to Dashboard
+        <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-6">
+            <div className="max-w-4xl mx-auto">
+                <Link to="/dashboard" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 font-bold mb-10 transition-colors group">
+                    <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Back to Dashboard
                 </Link>
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="glass-card p-10 md:p-14 bg-white/70 backdrop-blur-2xl border border-white"
-                >
-                    <div className="mb-10 text-center">
-                        <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 shadow-xl shadow-indigo-600/20">
-                            <Package size={32} />
+                <div className="grid lg:grid-cols-5 gap-12">
+                    {/* Form Side */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="lg:col-span-3 lg:order-1 order-2"
+                    >
+                        <div className="bg-white border border-slate-200 rounded-[40px] p-10 md:p-14 shadow-xl">
+                            {success ? (
+                                <div className="text-center py-20">
+                                    <div className="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8">
+                                        <CheckCircle2 size={40} />
+                                    </div>
+                                    <h2 className="text-3xl font-bold text-slate-900 mb-4">Request Posted!</h2>
+                                    <p className="text-slate-500 font-medium leading-relaxed">Your delivery request is now live in our network. Redirecting you to your dashboard...</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="mb-10 text-center lg:text-left">
+                                        <h1 className="text-3xl font-bold text-slate-900 mb-2">Ship an Item</h1>
+                                        <p className="text-slate-500 font-medium">Reach verified travelers on your desired route.</p>
+                                    </div>
+
+                                    {error && (
+                                        <div className="mb-8 p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-sm font-bold flex items-center gap-2">
+                                            <span className="w-1.5 h-1.5 bg-rose-600 rounded-full shrink-0" />
+                                            {error}
+                                        </div>
+                                    )}
+
+                                    <form onSubmit={handleSubmit} className="space-y-8">
+                                        <div className="space-y-3">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Item Title</label>
+                                            <div className="relative">
+                                                <Package size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input
+                                                    type="text"
+                                                    className="input-group pl-12"
+                                                    placeholder="What are you sending?"
+                                                    onChange={(e) => setFormData({ ...formData, itemDescription: e.target.value })}
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid md:grid-cols-2 gap-8">
+                                            <div className="space-y-3">
+                                                <label className="text-sm font-bold text-slate-700 ml-1">Category</label>
+                                                <select
+                                                    className="input-group"
+                                                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                                >
+                                                    <option value="ELECTRONICS">Electronics</option>
+                                                    <option value="DOCUMENTS">Documents</option>
+                                                    <option value="CLOTHING">Clothing</option>
+                                                    <option value="OTHER">Other</option>
+                                                </select>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <label className="text-sm font-bold text-slate-700 ml-1">Weight (kg)</label>
+                                                <div className="relative">
+                                                    <Weight size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                    <input
+                                                        type="number"
+                                                        className="input-group pl-12"
+                                                        placeholder="0.5"
+                                                        onChange={(e) => setFormData({ ...formData, weightKg: e.target.value })}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Route Details</label>
+                                            <div className="grid md:grid-cols-2 gap-4">
+                                                <div className="relative">
+                                                    <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                    <input
+                                                        type="text"
+                                                        className="input-group pl-12"
+                                                        placeholder="Pickup City"
+                                                        onChange={(e) => setFormData({ ...formData, pickupLocation: e.target.value })}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="relative">
+                                                    <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-500" />
+                                                    <input
+                                                        type="text"
+                                                        className="input-group pl-12"
+                                                        placeholder="Drop City"
+                                                        onChange={(e) => setFormData({ ...formData, dropLocation: e.target.value })}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Shipping Reward (₹)</label>
+                                            <div className="relative">
+                                                <CreditCard size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" />
+                                                <input
+                                                    type="number"
+                                                    className="input-group pl-12"
+                                                    placeholder="500"
+                                                    onChange={(e) => setFormData({ ...formData, escrowAmount: e.target.value })}
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            type="submit"
+                                            className="btn-primary w-full py-5 text-lg mt-6 shadow-xl shadow-indigo-100"
+                                            disabled={loading}
+                                        >
+                                            {loading ? 'Submitting to Network...' : 'Post Delivery Request'}
+                                        </button>
+                                    </form>
+                                </>
+                            )}
                         </div>
-                        <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">Send an Item</h1>
-                        <p className="text-slate-500 font-medium tracking-tight whitespace-nowrap">Tell us what you're shipping and where it needs to go.</p>
+                    </motion.div>
+
+                    {/* Info Side */}
+                    <div className="lg:col-span-2 space-y-8 order-1 lg:order-2">
+                        <div className="p-8 bg-slate-900 rounded-[32px] text-white shadow-xl relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-2xl rounded-full" />
+                            <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
+                                <Shield className="text-indigo-400" size={20} /> Professional Network
+                            </h3>
+                            <div className="space-y-6">
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-white font-bold text-xs italic">KYC</div>
+                                    <p className="text-slate-400 text-sm leading-relaxed font-medium">Only verified members will be able to view and accept your shipment on their route.</p>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-white font-bold text-xs italic">ESC</div>
+                                    <p className="text-slate-400 text-sm leading-relaxed font-medium">Your payment is held securely in escrow and only released when you confirm successful delivery.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-8 bg-indigo-50 rounded-[32px] border border-indigo-100 text-indigo-900">
+                            <h3 className="font-bold flex items-center gap-3 mb-4"><Info size={20} /> Guidelines</h3>
+                            <ul className="space-y-3 text-sm font-medium text-indigo-700/80">
+                                <li className="flex items-center gap-2">• Ensure item is legal & properly packed</li>
+                                <li className="flex items-center gap-2">• Provide accurate weight for traveler</li>
+                                <li className="flex items-center gap-2">• Coordinate pickup in public space</li>
+                            </ul>
+                        </div>
                     </div>
-
-                    <form onSubmit={handleSubmit} className="space-y-8">
-                        <div className="group relative transition-all duration-200">
-                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600">Item Description</label>
-                            <div className="relative">
-                                <Package size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600" />
-                                <input type="text" name="itemDescription" placeholder="e.g. MacBook Pro 14 inch" className="input-group pl-12" value={formData.itemDescription} onChange={handleChange} required />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="group relative">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600">Pickup City</label>
-                                <div className="relative">
-                                    <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600" />
-                                    <input type="text" name="pickupLocation" placeholder="San Francisco" className="input-group pl-12" value={formData.pickupLocation} onChange={handleChange} required />
-                                </div>
-                            </div>
-                            <div className="group relative">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600">Drop-off City</label>
-                                <div className="relative">
-                                    <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600" />
-                                    <input type="text" name="dropLocation" placeholder="London" className="input-group pl-12" value={formData.dropLocation} onChange={handleChange} required />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="group relative">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600">Est. Weight (kg)</label>
-                                <div className="relative">
-                                    <Weight size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600" />
-                                    <input type="number" step="0.1" name="weightKg" placeholder="1.5" className="input-group pl-12" value={formData.weightKg} onChange={handleChange} required />
-                                </div>
-                            </div>
-                            <div className="group relative">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block group-focus-within:text-indigo-600">Category</label>
-                                <div className="relative">
-                                    <Tag size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 z-10" />
-                                    <select name="category" value={formData.category} onChange={handleChange} className="input-group pl-12 bg-white appearance-none relative z-0">
-                                        <option value="Electronics">Electronics</option>
-                                        <option value="Documents">Documents</option>
-                                        <option value="Clothing">Clothing</option>
-                                        <option value="Food">Food & Perisables</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="group relative py-6">
-                            <div className="bg-indigo-50/50 p-8 rounded-[24px] border border-indigo-100/50 transition-all duration-300 group-focus-within:bg-indigo-50">
-                                <label className="text-xs font-black text-indigo-400 uppercase tracking-widest ml-1 mb-4 block group-focus-within:text-indigo-600">Offer Amount ($)</label>
-                                <div className="relative mb-4">
-                                    <DollarSign size={24} className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-600" />
-                                    <input type="number" name="escrowAmount" placeholder="0.00" className="w-full bg-white text-2xl font-black text-slate-900 px-14 py-4 rounded-2xl border-2 border-transparent focus:border-indigo-500 outline-none transition-all duration-200" value={formData.escrowAmount} onChange={handleChange} required />
-                                </div>
-                                <div className="flex items-start gap-3 p-4 bg-white/60 rounded-xl border border-white">
-                                    <Info size={16} className="text-indigo-600 shrink-0 mt-0.5" />
-                                    <p className="text-xs font-bold text-slate-400 leading-relaxed uppercase tracking-wide">
-                                        This amount will be placed in a secure escrow and released to the traveler only once you confirm delivery.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="submit" className="btn-primary w-full py-5 text-lg shadow-2xl shadow-indigo-600/20" disabled={loading}>
-                            {loading ? 'Processing Shipment...' : 'Post Delivery Request'}
-                        </button>
-                    </form>
-                </motion.div>
+                </div>
             </div>
         </div>
     );
