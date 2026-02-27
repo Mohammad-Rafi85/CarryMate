@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import api from '../api/axios';
 
 const AuthContext = createContext();
 
@@ -12,26 +13,38 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             try {
                 const decoded = jwtDecode(token);
-                setUser({
-                    ...decoded,
-                    username: decoded.sub,
-                    roles: decoded.roles || [], // Note: Adjust based on JWT claims
-                });
-                // For simplicity, we stored user info in localStorage too
-                const storedUser = JSON.parse(localStorage.getItem('user'));
-                if (storedUser) setUser(storedUser);
+                const currentTime = Date.now() / 1000;
+
+                if (decoded.exp < currentTime) {
+                    logout();
+                } else {
+                    const storedUser = JSON.parse(localStorage.getItem('user'));
+                    setUser(storedUser || {
+                        id: decoded.id,
+                        username: decoded.sub,
+                        roles: decoded.roles || [],
+                    });
+                }
             } catch (e) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
+                logout();
             }
         }
         setLoading(false);
     }, []);
 
-    const login = (userData, token) => {
-        localStorage.setItem('token', token);
+    const login = async (username, password) => {
+        const response = await api.post('/auth/signin', { username, password });
+        const { accessToken, ...userData } = response.data;
+
+        localStorage.setItem('token', accessToken);
         localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
+        return userData;
+    };
+
+    const register = async (formData) => {
+        const response = await api.post('/auth/signup', formData);
+        return response.data;
     };
 
     const logout = () => {
@@ -41,7 +54,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user, loading }}>
+        <AuthContext.Provider value={{ user, login, register, logout, isAuthenticated: !!user, loading }}>
             {children}
         </AuthContext.Provider>
     );
