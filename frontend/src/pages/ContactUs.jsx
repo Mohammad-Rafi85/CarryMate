@@ -1,158 +1,287 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, User, Bot, X, MessageSquare, Phone, Mail, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import {
+    Send,
+    Mail,
+    Phone,
+    MapPin,
+    MessageSquare,
+    CheckCircle2,
+    ArrowRight,
+    Globe,
+    Shield
+} from 'lucide-react';
 
 const ContactUs = () => {
-    const [messages, setMessages] = useState([
-        { id: 1, text: "Namaste! I'm your CarryMate assistant. How can I help you today?", sender: 'bot' }
-    ]);
-    const [inputValue, setInputValue] = useState('');
-    const [isTyping, setIsTyping] = useState(false);
-    const scrollRef = useRef(null);
+    const [formState, setFormState] = useState({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+    });
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
-    useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
-    }, [messages, isTyping]);
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
-    const handleSend = () => {
-        if (!inputValue.trim()) return;
+        // Prepare mailto link with developer's email
+        const targetEmail = "shaikmirchimohammadrafi@gmail.com";
+        const bodyContent = `Name: ${formState.name}%0AEmail: ${formState.email}%0A%0AMessage:%0A${formState.message}`;
+        const mailtoLink = `mailto:${targetEmail}?subject=${encodeURIComponent(formState.subject)}&body=${bodyContent}`;
 
-        const userMsg = { id: Date.now(), text: inputValue, sender: 'user' };
-        setMessages(prev => [...prev, userMsg]);
-        setInputValue('');
-        setIsTyping(true);
+        // Open user's default mail client
+        window.location.href = mailtoLink;
 
-        // Simulate AI response logic
-        setTimeout(() => {
-            let botText = "I'm not sure about that. Would you like to speak with a human agent?";
-            const input = userMsg.text.toLowerCase();
+        // Show success state on UI
+        setIsSubmitted(true);
+        setTimeout(() => setIsSubmitted(false), 5000);
+    };
 
-            if (input.includes('hello') || input.includes('hi')) {
-                botText = "Hello! Looking to send a package or earn while traveling?";
-            } else if (input.includes('delivery') || input.includes('send')) {
-                botText = "To send a package, just head to your Dashboard and click 'New Shipment'. We have travelers ready across all major Indian cities!";
-            } else if (input.includes('earn') || input.includes('trip')) {
-                botText = "You can earn by posting your upcoming trips. Travelers on trains and flights are making up to ₹2000 per trip!";
-            } else if (input.includes('safe') || input.includes('secure')) {
-                botText = "Safety is our priority! We use a UPI-linked escrow system and OTP verification for every single delivery.";
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
             }
+        }
+    };
 
-            setMessages(prev => [...prev, { id: Date.now() + 1, text: botText, sender: 'bot' }]);
-            setIsTyping(false);
-        }, 1500);
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
     };
 
     return (
-        <div className="min-h-screen bg-mesh pt-32 pb-20 px-6 relative overflow-hidden text-white">
-            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 relative z-10">
-                {/* Contact Info */}
-                <motion.div
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="flex flex-col justify-center gap-16"
-                >
-                    <div>
-                        <h1 className="text-7xl font-black text-white tracking-tighter mb-8 leading-[0.8]">Support <br /><span className="accent-text uppercase italic">Network.</span></h1>
-                        <p className="text-2xl text-slate-400 font-black max-w-lg leading-relaxed italic">Our logistics assistance grid is active 24/7. Connect with our AI or human agents.</p>
-                    </div>
+        <div className="min-h-screen bg-white text-slate-900 selection:bg-indigo-100 selection:text-indigo-900 font-sans">
+            {/* Header Section */}
+            <section className="relative pt-32 pb-20 overflow-hidden bg-professional">
+                <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 border border-indigo-100 rounded-full mb-8"
+                    >
+                        <span className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" />
+                        <span className="text-sm font-semibold text-indigo-700 tracking-wide uppercase">Support Network Active</span>
+                    </motion.div>
 
-                    <div className="grid gap-6">
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-6xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1]"
+                    >
+                        Get in touch with <br />
+                        <span className="text-indigo-600 underline decoration-indigo-200 underline-offset-8">our grid hubs.</span>
+                    </motion.h1>
+
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="text-xl text-slate-500 max-w-2xl mx-auto font-medium"
+                    >
+                        Whether you're a sender or a traveler, we're here to ensure your CarryMate experience is seamless and secure.
+                    </motion.p>
+                </div>
+            </section>
+
+            {/* Contact Grid */}
+            <section className="py-20 px-6">
+                <div className="max-w-7xl mx-auto">
+                    <div className="grid lg:grid-cols-3 gap-8 mb-20">
                         {[
-                            { icon: <Mail size={24} />, title: "Transmission", detail: "logistics@carrymate.io" },
-                            { icon: <Phone size={24} />, title: "Vocal Support", detail: "+91 800-PLATFORM" },
-                            { icon: <MapPin size={24} />, title: "Grid Hub", detail: "HSR Quadrant, Bengaluru" }
+                            {
+                                icon: <Mail className="text-indigo-600" />,
+                                title: "Email Support",
+                                detail: "support@carrymate.io",
+                                desc: "Our response time is under 12 hours."
+                            },
+                            {
+                                icon: <Phone className="text-indigo-600" />,
+                                title: "Phone Line",
+                                detail: "+91 800-CARRY-MATE",
+                                desc: "Available Mon-Fri, 9am - 6pm IST."
+                            },
+                            {
+                                icon: <MapPin className="text-indigo-600" />,
+                                title: "Headquarters",
+                                detail: "HSR Layout, Bengaluru",
+                                desc: "The heart of India's logistics tech."
+                            }
                         ].map((item, i) => (
-                            <div key={i} className="flex items-center gap-8 p-8 glass-card">
-                                <div className="w-16 h-16 bg-white/5 text-cyan-400 border border-white/10 rounded-[24px] flex items-center justify-center group-hover:rotate-12 transition-transform duration-500 shadow-glow">
-                                    {item.icon}
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.1 }}
+                                className="p-10 card-premium group cursor-pointer"
+                            >
+                                <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-indigo-600 transition-colors">
+                                    {React.cloneElement(item.icon, { size: 28, className: "group-hover:text-white transition-colors" })}
                                 </div>
-                                <div>
-                                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2">{item.title}</div>
-                                    <div className="text-xl font-black text-white tracking-tight">{item.detail}</div>
-                                </div>
-                            </div>
+                                <h3 className="text-2xl font-bold mb-4">{item.title}</h3>
+                                <p className="text-lg font-semibold text-slate-900 mb-2">{item.detail}</p>
+                                <p className="text-slate-500 font-medium">{item.desc}</p>
+                            </motion.div>
                         ))}
                     </div>
-                </motion.div>
 
-                {/* Chat Agent */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="glass-card overflow-hidden flex flex-col h-[750px] ring-1 ring-white/10"
-                >
-                    {/* Chat Header */}
-                    <div className="p-10 bg-slate-950/80 backdrop-blur-md text-white flex items-center justify-between border-b border-white/5">
-                        <div className="flex items-center gap-6">
-                            <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-cyan-400 rounded-[20px] flex items-center justify-center shadow-glow">
-                                <Bot size={30} />
+                    {/* Main Interaction Area */}
+                    <div className="grid lg:grid-cols-2 gap-20 items-start">
+                        {/* FAQ/Info Side */}
+                        <motion.div
+                            variants={containerVariants}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                        >
+                            <motion.h2 variants={itemVariants} className="text-4xl font-bold mb-8">Common Questions</motion.h2>
+                            <div className="space-y-10">
+                                {[
+                                    {
+                                        q: "How secure is the item handover?",
+                                        a: "We use OTP-based verification and real-time photo confirmation at every handover point."
+                                    },
+                                    {
+                                        q: "What if my traveler is delayed?",
+                                        a: "Our app provides real-time tracking. In case of delays, our support team can help coordinate alternatives."
+                                    },
+                                    {
+                                        q: "Are there any size restrictions?",
+                                        a: "Items must fit within the traveler's stated capacity (e.g., laptop bag, cabin bag, or check-in)."
+                                    }
+                                ].map((faq, i) => (
+                                    <motion.div key={i} variants={itemVariants} className="flex gap-6">
+                                        <div className="mt-1 flex-shrink-0 w-8 h-8 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
+                                            <CheckCircle2 size={18} />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-xl font-bold mb-2">{faq.q}</h4>
+                                            <p className="text-slate-500 font-medium leading-relaxed">{faq.a}</p>
+                                        </div>
+                                    </motion.div>
+                                ))}
                             </div>
-                            <div>
-                                <div className="font-black text-xl tracking-tight">CM-Grid Assistant</div>
-                                <div className="text-[10px] font-black text-cyan-400 flex items-center gap-2 uppercase tracking-widest mt-1">
-                                    <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse shadow-glow" /> Connection active
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Chat Body */}
-                    <div ref={scrollRef} className="flex-1 overflow-y-auto p-10 space-y-8 bg-slate-950/20 scroll-smooth">
-                        <AnimatePresence>
-                            {messages.map((msg) => (
-                                <motion.div
-                                    key={msg.id}
-                                    initial={{ opacity: 0, y: 15, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                                >
-                                    <div className={`max-w-[85%] p-6 rounded-[32px] text-base font-bold leading-relaxed shadow-sm ${msg.sender === 'user'
-                                        ? 'bg-cyan-500 text-slate-950 rounded-tr-none'
-                                        : 'bg-white/5 text-white rounded-tl-none border border-white/10'
-                                        }`}>
-                                        {msg.text}
-                                    </div>
-                                </motion.div>
-                            ))}
-                            {isTyping && (
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="flex gap-2"
-                                >
-                                    <div className="bg-white/5 p-5 rounded-[24px] rounded-tl-none border border-white/10 flex gap-1.5 shadow-sm">
-                                        <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce [animation-duration:1s]" />
-                                        <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce [animation-duration:1s] [animation-delay:0.2s]" />
-                                        <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce [animation-duration:1s] [animation-delay:0.4s]" />
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-
-                    {/* Chat Input */}
-                    <div className="p-8 bg-slate-950/50 backdrop-blur-md border-t border-white/5">
-                        <div className="relative group">
-                            <input
-                                type="text"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                                placeholder="Transmission start..."
-                                className="w-full bg-white/5 border-2 border-white/5 rounded-[24px] py-6 pl-10 pr-20 font-black text-white focus:border-cyan-400/50 focus:bg-white/10 outline-none transition-all placeholder:text-slate-800 shadow-inner"
-                            />
-                            <button
-                                onClick={handleSend}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 w-14 h-14 bg-cyan-400 text-slate-950 rounded-[18px] flex items-center justify-center hover:bg-white transition-all shadow-glow active:scale-95"
+                            <motion.div
+                                variants={itemVariants}
+                                className="mt-16 p-8 bg-indigo-900 rounded-[32px] text-white relative overflow-hidden shadow-2xl shadow-indigo-200"
                             >
-                                <Send size={24} />
-                            </button>
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full" />
+                                <div className="relative z-10">
+                                    <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                                        <Shield size={24} className="text-indigo-300" />
+                                        Safety Grid Active
+                                    </h3>
+                                    <p className="text-indigo-100/80 mb-6 font-medium">Our India-wide network is monitored 24/7 for maximum delivery security and user trust.</p>
+                                    <div className="flex items-center gap-4 text-sm font-bold uppercase tracking-widest text-indigo-300">
+                                        <span className="flex items-center gap-1"><Globe size={14} /> 28 States</span>
+                                        <span className="w-1 h-1 bg-indigo-500 rounded-full" />
+                                        <span>12k+ Verified Users</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+
+                        {/* Contact Form Side */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            className="bg-white p-12 rounded-[40px] border border-slate-100 shadow-2xl shadow-slate-200/50"
+                        >
+                            {isSubmitted ? (
+                                <div className="text-center py-20">
+                                    <div className="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8">
+                                        <CheckCircle2 size={40} />
+                                    </div>
+                                    <h3 className="text-3xl font-bold mb-4">Message Sent!</h3>
+                                    <p className="text-slate-500 font-medium text-lg">Thank you for reaching out. A CarryMate representative will contact you shortly.</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="mb-10">
+                                        <h3 className="text-3xl font-bold mb-2">Send us a message</h3>
+                                        <p className="text-slate-500 font-medium">We'll get back to you faster than a flight.</p>
+                                    </div>
+                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-bold text-slate-700 uppercase tracking-tighter ml-1">Full Name</label>
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    className="input-group"
+                                                    placeholder="John Doe"
+                                                    value={formState.name}
+                                                    onChange={e => setFormState({ ...formState, name: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-bold text-slate-700 uppercase tracking-tighter ml-1">Email Address</label>
+                                                <input
+                                                    type="email"
+                                                    required
+                                                    className="input-group"
+                                                    placeholder="john@example.com"
+                                                    value={formState.email}
+                                                    onChange={e => setFormState({ ...formState, email: e.target.value })}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-slate-700 uppercase tracking-tighter ml-1">Subject</label>
+                                            <input
+                                                type="text"
+                                                required
+                                                className="input-group"
+                                                placeholder="Shipping Query"
+                                                value={formState.subject}
+                                                onChange={e => setFormState({ ...formState, subject: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-slate-700 uppercase tracking-tighter ml-1">Message</label>
+                                            <textarea
+                                                rows="5"
+                                                required
+                                                className="input-group resize-none"
+                                                placeholder="Tell us how we can help..."
+                                                value={formState.message}
+                                                onChange={e => setFormState({ ...formState, message: e.target.value })}
+                                            ></textarea>
+                                        </div>
+                                        <button type="submit" className="btn-primary w-full py-5 text-lg font-bold">
+                                            Send Transmission <Send size={20} className="ml-2" />
+                                        </button>
+                                    </form>
+                                </>
+                            )}
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Newsletter / CTA */}
+            <section className="py-24 px-6">
+                <div className="max-w-5xl mx-auto bg-slate-900 rounded-[50px] p-12 md:p-24 text-center text-white relative overflow-hidden shadow-2xl">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full" />
+                    <div className="relative z-10">
+                        <h2 className="text-4xl md:text-5xl font-bold mb-8">Need immediate help?</h2>
+                        <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">Check our detailed documentation or speak with our live chat agents in the dashboard.</p>
+                        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                            <Link to="/help-center" className="btn-primary px-12 py-5 text-xl w-full sm:w-auto">Open Help Center</Link>
+                            <span className="text-slate-400 font-bold hidden sm:inline">OR</span>
+                            <div className="flex items-center gap-2 text-white font-bold text-lg underline underline-offset-8">
+                                <MessageSquare size={20} className="text-indigo-400" /> Live Chat System
+                            </div>
                         </div>
                     </div>
-                </motion.div>
-            </div>
+                </div>
+            </section>
         </div>
     );
 };
