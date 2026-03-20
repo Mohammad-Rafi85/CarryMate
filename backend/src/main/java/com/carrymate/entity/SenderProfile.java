@@ -21,6 +21,8 @@ public class SenderProfile {
 
     private String defaultPickupAddress;
 
+    private String companyName;
+
     private BigDecimal ratingAsSender = BigDecimal.ZERO;
 
     public SenderProfile(User user) {

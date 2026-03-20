@@ -25,7 +25,7 @@ const Navbar = () => {
 
     const navLinks = [
         { name: 'How it Works', path: '#how-it-works' },
-        { name: 'Deliveries', path: '/find-deliveries' },
+        { name: 'Traveller Portal', path: '/traveller' },
         { name: 'Trips', path: '/post-trip' },
     ];
 

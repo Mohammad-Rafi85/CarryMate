@@ -22,6 +22,16 @@ public class RegisterRequest {
 
     private String fullName;
     
+    private String phoneNumber;
+    
+    // Sender specifics
+    private String defaultPickupAddress;
+    private String companyName;
+    
+    // Traveler specifics
+    private String frequentRoute;
+    private String preferredCurrency;
+    
     @NotBlank
     private String userType;
 }

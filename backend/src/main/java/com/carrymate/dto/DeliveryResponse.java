@@ -17,6 +17,7 @@ public class DeliveryResponse {
     private String category;
     private String status;
     private BigDecimal escrowAmount;
+    private String imageUrl;
     private LocalDateTime createdAt;
 
     public DeliveryResponse(Delivery delivery) {
@@ -32,6 +33,7 @@ public class DeliveryResponse {
         this.category = delivery.getCategory();
         this.status = delivery.getStatus().name();
         this.escrowAmount = delivery.getEscrowAmount();
+        this.imageUrl = delivery.getImageUrl();
         this.createdAt = delivery.getCreatedAt();
     }
 }

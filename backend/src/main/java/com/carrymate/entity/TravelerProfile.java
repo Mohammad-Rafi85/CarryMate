@@ -21,6 +21,8 @@ public class TravelerProfile {
 
     private boolean passportVerified = false;
 
+    private String frequentRoute;
+
     private BigDecimal ratingAsTraveler = BigDecimal.ZERO;
 
     private String preferredCurrency = "USD";
