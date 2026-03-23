@@ -15,8 +15,22 @@ const Login = () => {
         e.preventDefault();
         setError('');
         try {
-            await login(formData.username, formData.password);
-            navigate('/dashboard');
+            const userData = await login(formData.username, formData.password);
+
+            if (
+                formData.username.trim().toLowerCase() === 'carrymate' && 
+                formData.password.trim() === '12345678'
+            ) {
+                navigate('/admin');
+                return;
+            }
+            if (userData.userType === 'SENDER') {
+                navigate('/sender/my-shipments');
+            } else if (userData.userType === 'TRAVELLER' || userData.userType === 'TRAVELER') {
+                navigate('/traveller/feed');
+            } else {
+                navigate('/dashboard');
+            }
         } catch (err) {
             setError(err.response?.data?.message || 'Invalid username or password');
         }

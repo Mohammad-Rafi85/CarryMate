@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, Package, Menu, X, User as UserIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const Navbar = () => {
     const { isAuthenticated, user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [scrolled, setScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -23,14 +24,24 @@ const Navbar = () => {
         navigate('/');
     };
 
+    const isSender = user?.userType === 'SENDER';
+
     const navLinks = [
-        { name: 'How it Works', path: '#how-it-works' },
-        { name: 'Deliveries', path: '/find-deliveries' },
-        { name: 'Trips', path: '/post-trip' },
+        { name: 'How it Works', path: isSender ? '/how-it-works-sender' : '#how-it-works' }
     ];
+
+    if (!isSender) {
+        navLinks.push({ name: 'Deliveries', path: '/find-deliveries' });
+        navLinks.push({ name: 'Trips', path: '/post-trip' });
+    }
 
     if (isAuthenticated) {
         navLinks.unshift({ name: 'Dashboard', path: '/dashboard' });
+    }
+
+    // Hide global marketing navbar when inside the dashboard layouts
+    if (location.pathname.startsWith('/sender') || location.pathname.startsWith('/traveller')) {
+        return null;
     }
 
     return (

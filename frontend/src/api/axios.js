@@ -34,8 +34,8 @@ instance.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       console.error('Session expired or unauthorized. Redirecting to login...');
-      // Only clear and redirect if we're not already on the login page
-      if (!window.location.pathname.includes('/login')) {
+      // Only clear and redirect if we're not already on the login page or admin page
+      if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/admin')) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         window.location.href = '/login';

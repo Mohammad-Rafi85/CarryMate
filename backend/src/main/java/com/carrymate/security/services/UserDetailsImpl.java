@@ -19,15 +19,21 @@ public class UserDetailsImpl implements UserDetails {
 
     @JsonIgnore
     private String password;
+    
+    private Boolean kycVerified;
+    private String userType;
 
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsImpl(Long id, String username, String email, String password,
+                           Boolean kycVerified, String userType,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.kycVerified = kycVerified;
+        this.userType = userType;
         this.authorities = authorities;
     }
 
@@ -39,6 +45,8 @@ public class UserDetailsImpl implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getKycVerified(),
+                user.getUserType() != null ? user.getUserType().name() : null,
                 authorities);
     }
 
@@ -53,6 +61,14 @@ public class UserDetailsImpl implements UserDetails {
 
     public String getEmail() {
         return email;
+    }
+
+    public Boolean getKycVerified() {
+        return kycVerified;
+    }
+
+    public String getUserType() {
+        return userType;
     }
 
     @Override

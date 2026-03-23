@@ -38,6 +38,10 @@ public class User {
     private BigDecimal walletBalance = BigDecimal.ZERO;
 
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    private Boolean kycVerified = false;
+
+    private String kycIdReference;
     
     public enum Role {
         USER, ADMIN
