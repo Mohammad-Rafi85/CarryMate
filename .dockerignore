@@ -1,0 +1,13 @@
+**/node_modules
+**/target
+**/.git
+**/.env
+**/dist
+**/build
+**/.mvn
+**/.settings
+**/.classpath
+**/.project
+**/.idea
+**/*.log
+**/*.temp
