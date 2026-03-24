@@ -24,17 +24,11 @@ const Navbar = () => {
         navigate('/');
     };
 
-<<<<<<< HEAD
-    const isSender = user?.userType === 'SENDER';
-
-    const navLinks = [];
-=======
     const navLinks = [
         { name: 'How it Works', path: '#how-it-works' },
         { name: 'Traveller Portal', path: '/traveller' },
         { name: 'Trips', path: '/post-trip' },
     ];
->>>>>>> fff9d68e72e3e06cdf03555325be188e60fe8b01
 
     if (isAuthenticated) {
         navLinks.unshift({ name: 'Dashboard', path: '/dashboard' });
@@ -81,7 +75,7 @@ const Navbar = () => {
                                 <div className="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center">
                                     <UserIcon size={14} />
                                 </div>
-                                <span className="text-sm font-semibold text-slate-700">{user.username}</span>
+                                <span className="text-sm font-semibold text-slate-700">{user?.username || 'User'}</span>
                             </div>
                             <button
                                 onClick={handleLogout}

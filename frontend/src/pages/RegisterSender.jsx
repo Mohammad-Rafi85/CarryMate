@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 import { Mail, Lock, AtSign, Eye, EyeOff, ArrowLeft, CheckCircle2, Shield, Zap, Building, MapPin } from 'lucide-react';
 
 const RegisterSender = () => {
@@ -15,27 +16,62 @@ const RegisterSender = () => {
     const { register, loading } = useAuth();
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [step, setStep] = useState(1); // 1: Details, 2: OTP
+    const [otp, setOtp] = useState('');
+    const [isOtpSending, setIsOtpSending] = useState(false);
+    const [timer, setTimer] = useState(0);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        let interval;
+        if (timer > 0) {
+            interval = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [timer]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleSendOtp = async () => {
+        if (!formData.email) {
+            setError('Please enter your email first.');
+            return;
+        }
+        setIsOtpSending(true);
+        setError('');
+        try {
+            await api.post('/auth/send-otp', { email: formData.email });
+            setStep(2);
+            setTimer(30);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to send OTP.');
+        } finally {
+            setIsOtpSending(false);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (step === 1) {
+            handleSendOtp();
+            return;
+        }
+
         try {
-            await register(formData);
+            await register({ ...formData, otp });
             setSuccess(true);
             setTimeout(() => navigate('/login'), 2000);
         } catch (err) {
-            // Enhanced error catching for Spring validation arrays
             if (err.response?.data?.errors?.length > 0) {
-                setError(err.response.data.errors[0].defaultMessage || "Validation Error");
-            } else if (err.response?.data?.message) {
-                setError(err.response.data.message);
+                setError(err.response.data.errors[0].defaultMessage);
             } else {
-                setError('Registration failed. Please check your network and try again.');
+                setError(err.response?.data?.message || 'Invalid OTP or Registration failed.');
             }
         }
     };
@@ -93,8 +129,10 @@ const RegisterSender = () => {
                     ) : (
                         <div className="w-full max-w-md mx-auto">
                             <div className="mb-10 text-center">
-                                <h2 className="text-3xl font-bold text-slate-900 mb-3">Create Sender Account</h2>
-                                <p className="text-slate-500 font-medium tracking-tight">Just the essentials to get you shipping.</p>
+                                <h2 className="text-3xl font-bold text-slate-900 mb-3">{step === 1 ? 'Create Sender Account' : 'Verify Email'}</h2>
+                                <p className="text-slate-500 font-medium tracking-tight">
+                                    {step === 1 ? 'Just the essentials to get you shipping.' : `We've sent a code to ${formData.email}`}
+                                </p>
                             </div>
                             
                             {error && (
@@ -105,33 +143,72 @@ const RegisterSender = () => {
                             )}
 
                             <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-700 ml-1">Username (Min. 3 chars)</label>
-                                    <div className="relative">
-                                        <AtSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                        <input type="text" name="username" className="input-group pl-12" placeholder="jane_d" value={formData.username} onChange={handleChange} required />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
-                                    <div className="relative">
-                                        <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                        <input type="email" name="email" className="input-group pl-12" placeholder="jane@email.com" value={formData.email} onChange={handleChange} required />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-700 ml-1">Secure Password (Min. 6 chars)</label>
-                                    <div className="relative">
-                                        <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                        <input type={showPassword ? "text" : "password"} name="password" className="input-group pl-12 pr-12" placeholder="••••••••" value={formData.password} onChange={handleChange} required />
-                                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600">
-                                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                {step === 1 ? (
+                                    <>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Username (Min. 3 chars)</label>
+                                            <div className="relative">
+                                                <AtSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input type="text" name="username" className="input-group pl-12" placeholder="jane_d" value={formData.username} onChange={handleChange} required />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
+                                            <div className="relative">
+                                                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input type="email" name="email" className="input-group pl-12" placeholder="jane@email.com" value={formData.email} onChange={handleChange} required />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Secure Password (Min. 6 chars)</label>
+                                            <div className="relative">
+                                                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input type={showPassword ? "text" : "password"} name="password" className="input-group pl-12 pr-12" placeholder="••••••••" value={formData.password} onChange={handleChange} required />
+                                                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600">
+                                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button type="submit" className="btn-primary bg-indigo-600 hover:bg-indigo-700 w-full py-4 text-base mt-2 shadow-indigo-200 shadow-xl" disabled={isOtpSending}>
+                                            {isOtpSending ? 'Sending OTP...' : 'Send OTP & Register'}
                                         </button>
-                                    </div>
-                                </div>
-                                <button type="submit" className="btn-primary bg-indigo-600 hover:bg-indigo-700 w-full py-4 text-base mt-2 shadow-indigo-200 shadow-xl" disabled={loading}>
-                                    {loading ? 'Creating Profile...' : 'Complete Registration'}
-                                </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Verification Code</label>
+                                            <div className="relative">
+                                                <Shield size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input 
+                                                    type="text" 
+                                                    maxLength="6"
+                                                    className="input-group pl-12 tracking-[1em] font-black text-xl text-center" 
+                                                    placeholder="000000" 
+                                                    value={otp} 
+                                                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))} 
+                                                    required 
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" className="btn-primary w-full py-4 text-base mt-2 shadow-indigo-100 shadow-xl" disabled={loading}>
+                                            {loading ? 'Verifying...' : 'Verify & Create Account'}
+                                        </button>
+
+                                        <div className="flex justify-between items-center mt-4 px-1">
+                                            <button type="button" onClick={() => setStep(1)} className="text-slate-400 text-xs font-bold hover:text-slate-600 uppercase tracking-wider">
+                                                Edit Email
+                                            </button>
+                                            {timer > 0 ? (
+                                                <span className="text-slate-400 text-xs font-bold">Resend in {timer}s</span>
+                                            ) : (
+                                                <button type="button" onClick={handleSendOtp} className="text-indigo-600 text-xs font-bold hover:underline uppercase tracking-wider">
+                                                    Resend OTP
+                                                </button>
+                                            )}
+                                        </div>
+                                    </>
+                                )}
                             </form>
                             <div className="mt-10 text-center font-bold text-sm pt-8 border-t border-slate-100">
                                 <span className="text-slate-400">Already part of the network? </span>

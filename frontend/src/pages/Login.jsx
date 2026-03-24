@@ -4,47 +4,11 @@ import { Package, Truck, ArrowLeft, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Login = () => {
-<<<<<<< HEAD
-    const [formData, setFormData] = useState({ username: '', password: '' });
-    const [showPassword, setShowPassword] = useState(false);
-    const { login, loading } = useAuth();
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        try {
-            const userData = await login(formData.username, formData.password);
-
-            if (
-                formData.username.trim().toLowerCase() === 'carrymate' && 
-                formData.password.trim() === '12345678'
-            ) {
-                navigate('/admin');
-                return;
-            }
-            if (userData.userType === 'SENDER') {
-                navigate('/sender/my-shipments');
-            } else if (userData.userType === 'TRAVELLER' || userData.userType === 'TRAVELER') {
-                navigate('/traveller/feed');
-            } else {
-                navigate('/dashboard');
-            }
-        } catch (err) {
-            setError(err.response?.data?.message || 'Invalid username or password');
-        }
-    };
-
-    return (
-        <div className="min-h-screen bg-professional flex items-center justify-center p-6">
-=======
     return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 pt-24">
             <Link to="/" className="absolute top-10 left-10 flex items-center gap-2 text-slate-500 hover:text-slate-900 font-bold transition-colors group">
                 <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Back to Home
             </Link>
->>>>>>> fff9d68e72e3e06cdf03555325be188e60fe8b01
 
             <div className="w-full max-w-4xl">
                 <div className="text-center mb-16">
