@@ -1,1 +1,13 @@
-/build
+# Java
+target/
+*.jar
+
+# Node
+node_modules/
+
+# Env
+.env
+
+# Build
+dist/
+build/
