@@ -3,12 +3,17 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
+import LoginSender from './pages/LoginSender';
+import LoginTraveler from './pages/LoginTraveler';
 import Register from './pages/Register';
+import RegisterSender from './pages/RegisterSender';
+import RegisterTraveler from './pages/RegisterTraveler';
 import Dashboard from './pages/Dashboard';
 import Chatbot from './components/Chatbot';
 import PostDelivery from './pages/PostDelivery';
 import PostTrip from './pages/PostTrip';
 import MatchResults from './pages/MatchResults';
+import TravellerPortal from './pages/TravellerPortal';
 import './App.css';
 
 import LandingPage from './pages/LandingPage';
@@ -56,7 +61,11 @@ function App() {
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/login/sender" element={<LoginSender />} />
+              <Route path="/login/traveler" element={<LoginTraveler />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/register/sender" element={<RegisterSender />} />
+              <Route path="/register/traveler" element={<RegisterTraveler />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/contact" element={<ContactUs />} />
@@ -65,6 +74,7 @@ function App() {
               <Route path="/post-delivery" element={<ProtectedRoute><PostDelivery /></ProtectedRoute>} />
               <Route path="/post-trip" element={<ProtectedRoute><PostTrip /></ProtectedRoute>} />
               <Route path="/find-deliveries" element={<ProtectedRoute><MatchResults /></ProtectedRoute>} />
+<<<<<<< HEAD
               <Route path="/how-it-works-sender" element={<ProtectedRoute><HowItWorksSender /></ProtectedRoute>} />
               
               {/* Sender Routes */}
@@ -91,6 +101,9 @@ function App() {
               {/* Admin Routes */}
               <Route path="/admin" element={<AdminDashboard />} />
 
+=======
+              <Route path="/traveller" element={<ProtectedRoute><TravellerPortal /></ProtectedRoute>} />
+>>>>>>> fff9d68e72e3e06cdf03555325be188e60fe8b01
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
             {/* Global AI Chat Support */}

@@ -31,6 +31,9 @@ public class Delivery {
     private String itemDescription;
     private BigDecimal weightKg;
     private String category;
+    
+    @Column(length = 1000)
+    private String imageUrl;
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.PENDING;

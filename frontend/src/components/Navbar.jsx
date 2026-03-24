@@ -24,9 +24,17 @@ const Navbar = () => {
         navigate('/');
     };
 
+<<<<<<< HEAD
     const isSender = user?.userType === 'SENDER';
 
     const navLinks = [];
+=======
+    const navLinks = [
+        { name: 'How it Works', path: '#how-it-works' },
+        { name: 'Traveller Portal', path: '/traveller' },
+        { name: 'Trips', path: '/post-trip' },
+    ];
+>>>>>>> fff9d68e72e3e06cdf03555325be188e60fe8b01
 
     if (isAuthenticated) {
         navLinks.unshift({ name: 'Dashboard', path: '/dashboard' });

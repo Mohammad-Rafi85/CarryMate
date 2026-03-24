@@ -31,6 +31,7 @@ public class DeliveryService {
         delivery.setWeightKg(request.getWeightKg());
         delivery.setCategory(request.getCategory());
         delivery.setEscrowAmount(request.getEscrowAmount());
+        delivery.setImageUrl(request.getImageUrl());
         delivery.setStatus(Delivery.Status.PENDING);
         delivery.setOtpCode(generateOtp());
 

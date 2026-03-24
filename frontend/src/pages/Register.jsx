@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
+<<<<<<< HEAD
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
@@ -87,63 +88,32 @@ const Register = () => {
         }
     };
 
+=======
+import { Link } from 'react-router-dom';
+import { Building, Globe, ArrowLeft, ArrowRight } from 'lucide-react';
+
+const Register = () => {
+>>>>>>> fff9d68e72e3e06cdf03555325be188e60fe8b01
     return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 relative overflow-hidden">
             <Link to="/" className="absolute top-10 left-10 flex items-center gap-2 text-slate-500 hover:text-slate-900 font-semibold transition-colors group z-20">
                 <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Back to Home
             </Link>
 
-            <motion.div
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="w-full max-w-5xl grid lg:grid-cols-5 bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-100"
-            >
-                {/* Left Side - Info */}
-                <div className="hidden lg:flex lg:col-span-2 bg-slate-900 p-16 flex-col justify-between relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/5 blur-[100px] rounded-full" />
-
-                    <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-16">
-                            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-indigo-500/20 shadow-xl">
-                                <Shield className="text-white" size={20} />
-                            </div>
-                            <span className="text-xl font-bold tracking-tight text-white">Join the Network</span>
-                        </div>
-
-                        <h2 className="text-4xl font-bold text-white mb-8 leading-tight">Trust-based delivery for a better India.</h2>
-
-                        <div className="space-y-8">
-                            {[
-                                { icon: <Shield size={18} />, title: 'Identity Verified', desc: 'Secure KYC ensures a safe community for everyone.' },
-                                { icon: <Zap size={18} />, title: 'Direct Transit', desc: 'Move items faster through existing traveler routes.' },
-                                { icon: <Globe size={18} />, title: 'Eco-Friendly', desc: 'Zero added carbon missions per delivery.' }
-                            ].map((item, i) => (
-                                <div key={i} className="flex gap-4">
-                                    <div className="mt-1 w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-indigo-400 shrink-0">
-                                        {item.icon}
-                                    </div>
-                                    <div>
-                                        <h4 className="text-white font-bold mb-1">{item.title}</h4>
-                                        <p className="text-slate-400 text-sm font-medium leading-relaxed">{item.desc}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="relative z-10 pt-10 border-t border-white/10">
-                        <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Powered by CarryMate P2P</p>
-                    </div>
+            <div className="w-full max-w-5xl relative z-10">
+                <div className="text-center mb-16">
+                    <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight">Join CarryMate</motion.h1>
+                    <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-xl text-slate-500 font-medium">How would you like to use our platform?</motion.p>
                 </div>
 
-                {/* Right Side - Form */}
-                <div className="lg:col-span-3 p-10 md:p-16 relative">
-                    {success ? (
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="h-full flex flex-col items-center justify-center text-center">
-                            <div className="w-24 h-24 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-8">
-                                <CheckCircle2 size={48} />
+                <div className="grid md:grid-cols-2 gap-8">
+                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+                        <Link to="/register/sender" className="block h-full bg-white rounded-[40px] p-10 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all group border border-slate-100 hover:border-indigo-100 overflow-hidden relative">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full blur-[50px] group-hover:bg-indigo-100 transition-colors" />
+                            <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-sm">
+                                <Building size={32} />
                             </div>
+<<<<<<< HEAD
                             <h2 className="text-3xl font-bold text-slate-900 mb-4">Registration Successful!</h2>
                             <p className="text-slate-500 font-medium">Welcome {formData.fullName || formData.username}! Redirecting you to sign in...</p>
                         </motion.div>
@@ -152,8 +122,17 @@ const Register = () => {
                             <div className="mb-10">
                                 <h2 className="text-3xl font-bold text-slate-900 mb-2">Create Account</h2>
                                 <p className="text-slate-500 font-medium tracking-tight">Enter your professional details to get started.</p>
+=======
+                            <h2 className="text-3xl font-bold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors">I want to Send</h2>
+                            <p className="text-slate-500 leading-relaxed mb-8">Ship your packages faster and cheaper by leveraging our network of verified travelers.</p>
+                            <div className="flex items-center text-indigo-600 font-bold gap-2">
+                                Register as Sender <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+>>>>>>> fff9d68e72e3e06cdf03555325be188e60fe8b01
                             </div>
+                        </Link>
+                    </motion.div>
 
+<<<<<<< HEAD
                             {error && (
                                 <div className="mb-8 p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-sm font-bold animate-shake">
                                     {error}
@@ -285,11 +264,28 @@ const Register = () => {
                             <div className="mt-12 text-center font-bold text-sm pt-8 border-t border-slate-100">
                                 <span className="text-slate-400">Already part of the network? </span>
                                 <Link to="/login" className="text-indigo-600 hover:underline underline-offset-8 transition-all">Sign In</Link>
+=======
+                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+                        <Link to="/register/traveler" className="block h-full bg-white rounded-[40px] p-10 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all group border border-slate-100 hover:border-emerald-100 overflow-hidden relative">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full blur-[50px] group-hover:bg-emerald-100 transition-colors" />
+                            <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-sm">
+                                <Globe size={32} />
+>>>>>>> fff9d68e72e3e06cdf03555325be188e60fe8b01
                             </div>
-                        </div>
-                    )}
+                            <h2 className="text-3xl font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors">I am Traveling</h2>
+                            <p className="text-slate-500 leading-relaxed mb-8">Monetize your empty luggage space by delivering items safely along your existing route.</p>
+                            <div className="flex items-center text-emerald-600 font-bold gap-2">
+                                Register as Traveler <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                            </div>
+                        </Link>
+                    </motion.div>
                 </div>
-            </motion.div>
+                
+                <div className="mt-16 text-center font-bold text-sm">
+                    <span className="text-slate-400">Already have an account? </span>
+                    <Link to="/login" className="text-indigo-600 hover:underline underline-offset-8 transition-all">Sign In Here</Link>
+                </div>
+            </div>
         </div>
     );
 };

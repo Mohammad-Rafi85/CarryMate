@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 C:\Users\Mohammad Rafi\AndroidStudioProjects\CarryMateP2Pmicrodeliveryplatform\backend\src\main\java\com\carrymate\security\services\UserDetailsServiceImpl.java
 C:\Users\Mohammad Rafi\AndroidStudioProjects\CarryMateP2Pmicrodeliveryplatform\backend\src\main\java\com\carrymate\repository\UserRepository.java
 C:\Users\Mohammad Rafi\AndroidStudioProjects\CarryMateP2Pmicrodeliveryplatform\backend\src\main\java\com\carrymate\dto\ShipmentResponse.java
@@ -44,3 +45,41 @@ C:\Users\Mohammad Rafi\AndroidStudioProjects\CarryMateP2Pmicrodeliveryplatform\b
 C:\Users\Mohammad Rafi\AndroidStudioProjects\CarryMateP2Pmicrodeliveryplatform\backend\src\main\java\com\carrymate\repository\ShipmentRepository.java
 C:\Users\Mohammad Rafi\AndroidStudioProjects\CarryMateP2Pmicrodeliveryplatform\backend\src\main\java\com\carrymate\dto\PostDeliveryRequest.java
 C:\Users\Mohammad Rafi\AndroidStudioProjects\CarryMateP2Pmicrodeliveryplatform\backend\src\main\java\com\carrymate\entity\SenderProfile.java
+=======
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/entity/Review.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/controller/ReviewController.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/dto/PostTripRequest.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/entity/Trip.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/security/services/UserDetailsServiceImpl.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/repository/UserRepository.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/repository/TravelerProfileRepository.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/entity/Delivery.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/service/TripService.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/entity/SenderProfile.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/CarryMateApplication.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/repository/SenderProfileRepository.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/dto/RegisterRequest.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/security/WebSecurityConfig.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/dto/MessageResponse.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/entity/TravelerProfile.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/controller/AdminController.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/controller/DeliveryController.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/security/jwt/JwtUtils.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/repository/DeliveryRepository.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/entity/User.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/dto/LoginRequest.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/dto/DeliveryResponse.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/controller/AuthController.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/dto/TripResponse.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/service/ReviewService.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/security/jwt/AuthTokenFilter.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/repository/ReviewRepository.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/dto/PostDeliveryRequest.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/dto/PostReviewRequest.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/repository/TripRepository.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/service/DeliveryService.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/security/services/UserDetailsImpl.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/controller/TripController.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/security/jwt/AuthEntryPointJwt.java
+/home/nani/Desktop/carrymate/CarryMate/backend/src/main/java/com/carrymate/dto/JwtResponse.java
+>>>>>>> fff9d68e72e3e06cdf03555325be188e60fe8b01

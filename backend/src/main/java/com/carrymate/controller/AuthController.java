@@ -96,6 +96,7 @@ public class AuthController {
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(encoder.encode(signUpRequest.getPassword()));
         user.setFullName(signUpRequest.getFullName());
+        user.setPhoneNumber(signUpRequest.getPhoneNumber());
         user.setRole(User.Role.USER);
         
         try {
@@ -108,9 +109,17 @@ public class AuthController {
 
         // Save detailed profile separately
         if (user.getUserType() == User.UserType.SENDER) {
-            senderProfileRepository.save(new com.carrymate.entity.SenderProfile(user));
+            com.carrymate.entity.SenderProfile senderProfile = new com.carrymate.entity.SenderProfile(user);
+            senderProfile.setCompanyName(signUpRequest.getCompanyName());
+            senderProfile.setDefaultPickupAddress(signUpRequest.getDefaultPickupAddress());
+            senderProfileRepository.save(senderProfile);
         } else if (user.getUserType() == User.UserType.TRAVELER) {
-            travelerProfileRepository.save(new com.carrymate.entity.TravelerProfile(user));
+            com.carrymate.entity.TravelerProfile travelerProfile = new com.carrymate.entity.TravelerProfile(user);
+            travelerProfile.setFrequentRoute(signUpRequest.getFrequentRoute());
+            if (signUpRequest.getPreferredCurrency() != null && !signUpRequest.getPreferredCurrency().trim().isEmpty()) {
+                travelerProfile.setPreferredCurrency(signUpRequest.getPreferredCurrency());
+            }
+            travelerProfileRepository.save(travelerProfile);
         }
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));

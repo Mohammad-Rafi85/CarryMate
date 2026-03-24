@@ -11,4 +11,5 @@ public class PostDeliveryRequest {
     private BigDecimal weightKg;
     private String category;
     private BigDecimal escrowAmount;
+    private String imageUrl;
 }
