@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Search,
     BookOpen,
@@ -11,7 +11,9 @@ import {
     User,
     ArrowRight,
     MessageSquare,
-    Phone
+    Phone,
+    ChevronDown,
+    ChevronUp
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -25,8 +27,41 @@ const HelpCenter = () => {
         { icon: <HelpCircle />, title: "General FAQ", count: 20, desc: "Common questions about the network." }
     ];
 
+    const articles = [
+        {
+            q: "How to verify your ID for the first time?",
+            a: "To verify your ID, navigate to your Profile dashboard, click on 'Verify Identity', and securely upload a scanned copy of your government-issued ID. Verification typically takes up to 24 hours."
+        },
+        {
+            q: "What items are prohibited on CarryMate?",
+            a: "Prohibited items include illegal substances, hazardous materials, firearms, perishables lacking proper packaging, and extremely fragile items without traveler consent. Please consult our Terms of Service for the complete list."
+        },
+        {
+            q: "How does the escrow payment system work?",
+            a: "When a delivery is agreed upon, the sender's payment is securely held in escrow. It is only released to the traveler once the item is confirmed delivered by both parties, ensuring total protection."
+        },
+        {
+            q: "Coordinating the pickup with your traveler",
+            a: "Once a match is confirmed, you can use our secure in-app chat to discuss safe meeting spots, recognize each other, and complete the OTP-based handover process."
+        },
+        {
+            q: "Reporting an issue with a delivery",
+            a: "If an issue arises, navigate to your active shipments, select 'Report Issue', and provide details along with any photo evidence. Our 24/7 support grid will intervene immediately."
+        },
+        {
+            q: "Understanding the rating system",
+            a: "After every successful handover, both the sender and the traveler can rate each other out of 5 stars and leave a review. Consistently high ratings unlock priority matching status."
+        }
+    ];
+
+    const [activeArticle, setActiveArticle] = useState(null);
+
+    const toggleArticle = (index) => {
+        setActiveArticle(activeArticle === index ? null : index);
+    };
+
     return (
-        <div className="min-h-screen bg-white text-slate-900 font-sans">
+        <div className="min-h-screen text-slate-900 font-sans bg-slate-50 bg-gradient-to-b from-slate-50 via-indigo-50/30 to-slate-50">
             {/* Search Hero */}
             <section className="bg-professional pt-32 pb-20 px-6">
                 <div className="max-w-7xl mx-auto text-center">
@@ -87,19 +122,41 @@ const HelpCenter = () => {
                         <BookOpen className="text-indigo-600" />
                         Popular Articles
                     </h2>
-                    <div className="grid md:grid-cols-2 gap-6">
-                        {[
-                            "How to verify your ID for the first time?",
-                            "What items are prohibited on CarryMate?",
-                            "How does the escrow payment system work?",
-                            "Coordinating the pickup with your traveler",
-                            "Reporting an issue with a delivery",
-                            "Understanding the rating system"
-                        ].map((article, i) => (
-                            <div key={i} className="bg-white p-6 rounded-2xl border border-slate-100 flex items-center justify-between group cursor-pointer hover:border-indigo-100 transition-colors">
-                                <span className="font-semibold text-lg text-slate-700 group-hover:text-indigo-600 transition-colors">{article}</span>
-                                <ArrowRight size={20} className="text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all" />
-                            </div>
+                    <div className="grid md:grid-cols-2 gap-6 items-start">
+                        {articles.map((article, i) => (
+                            <motion.div 
+                                key={i} 
+                                className="bg-white rounded-2xl border border-slate-100 overflow-hidden cursor-pointer hover:border-indigo-100 transition-colors shadow-sm"
+                                onClick={() => toggleArticle(i)}
+                                layout
+                            >
+                                <div className="p-6 flex items-center justify-between group">
+                                    <span className={`font-semibold text-lg transition-colors ${activeArticle === i ? 'text-indigo-600' : 'text-slate-700 group-hover:text-indigo-600'}`}>
+                                        {article.q}
+                                    </span>
+                                    {activeArticle === i ? (
+                                        <ChevronUp size={20} className="text-indigo-600 flex-shrink-0 ml-4" />
+                                    ) : (
+                                        <ChevronDown size={20} className="text-slate-300 group-hover:text-indigo-600 flex-shrink-0 ml-4 transition-colors" />
+                                    )}
+                                </div>
+                                <AnimatePresence>
+                                    {activeArticle === i && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: "auto", opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                        >
+                                            <div className="px-6 pb-6 text-slate-500 leading-relaxed font-medium">
+                                                <div className="border-t border-slate-100 pt-4 mt-2">
+                                                    {article.a}
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </motion.div>
                         ))}
                     </div>
                 </div>

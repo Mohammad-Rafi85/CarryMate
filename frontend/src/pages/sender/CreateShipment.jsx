@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
-import { Package, MapPin, DollarSign, User, Image as ImageIcon, MapPinned, Phone } from 'lucide-react';
+import { Package, MapPin, DollarSign, User, Image as ImageIcon, MapPinned, Phone, Map, X, CheckCircle2 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -13,7 +13,6 @@ L.Icon.Default.mergeOptions({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
-
 const defaultCenter = { lat: 28.6139, lng: 77.2090 }; // New Delhi
 
 const CreateShipment = () => {
@@ -28,6 +27,7 @@ const CreateShipment = () => {
         weight: '',
         handlingInstructions: '',
         description: '',
+        senderContact: '',
         receiverName: '',
         receiverContact: '',
         price: '',
@@ -77,56 +77,113 @@ const CreateShipment = () => {
         }
     };
 
+    const loadRazorpay = () => {
+        return new Promise((resolve) => {
+            const script = document.createElement('script');
+            script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
 
         try {
-            await api.post('/sender/create-shipment', {
-                ...formData,
-                destinationAddress: formData.destinationDetails ? `${formData.destinationAddress}, ${formData.destinationDetails}` : formData.destinationAddress,
-                price: parseFloat(formData.price),
-                weight: parseFloat(formData.weight),
-                imageBase64,
-                pickupLat: pickupLocation.lat,
-                pickupLng: pickupLocation.lng,
-                destinationLat: destinationLocation.lat,
-                destinationLng: destinationLocation.lng
+            const isLoaded = await loadRazorpay();
+            if (!isLoaded) {
+                setError("Razorpay SDK failed to load. Please check your internet connection.");
+                setLoading(false);
+                return;
+            }
+
+            // 1. Create Order via PaymentController
+            const orderRes = await api.post('/payment/create-order', {
+                amount: parseFloat(formData.price)
             });
-            navigate('/sender/my-shipments');
+
+            const { orderId, amount, currency } = orderRes.data;
+
+            // 2. Initialize Razorpay Checkout
+            const options = {
+                key: "rzp_test_SUwWFcLuV8oRjZ",
+                amount: amount,
+                currency: currency,
+                name: "CarryMate",
+                description: "Shipment Payment Escrow",
+                order_id: orderId,
+                handler: async function (response) {
+                    // 3. On successful payment, post the shipment details
+                    try {
+                        await api.post('/sender/create-shipment', {
+                            ...formData,
+                            destinationAddress: formData.destinationDetails ? `${formData.destinationAddress}, ${formData.destinationDetails}` : formData.destinationAddress,
+                            price: parseFloat(formData.price),
+                            weight: parseFloat(formData.weight),
+                            imageBase64,
+                            pickupLat: pickupLocation.lat,
+                            pickupLng: pickupLocation.lng,
+                            destinationLat: destinationLocation.lat,
+                            destinationLng: destinationLocation.lng,
+                            paymentId: response.razorpay_payment_id
+                        });
+                        navigate('/sender/my-shipments');
+                    } catch (err) {
+                        console.error("Create Shipment Error:", err);
+                        const strErr = err.response?.data?.message || err.response?.data || err.message || JSON.stringify(err);
+                        setError(`Payment successful but failed to save shipment: ${strErr}`);
+                        setLoading(false);
+                    }
+                },
+                prefill: {
+                    name: formData.receiverName,
+                    contact: formData.senderContact || ""
+                },
+                theme: {
+                    color: "#4f46e5"
+                },
+                modal: {
+                    ondismiss: function() {
+                        setLoading(false);
+                    }
+                }
+            };
+
+            const paymentObject = new window.Razorpay(options);
+            paymentObject.open();
+
         } catch (err) {
-            console.error("Create Shipment Error:", err);
+            console.error("Payment Initiation Error:", err);
             const strErr = err.response?.data?.message || err.response?.data || err.message || JSON.stringify(err);
-            setError(`Failed to create shipment: ${strErr}`);
-        } finally {
+            setError(`Failed to initiate payment: ${strErr}`);
             setLoading(false);
         }
     };
 
 
-
     const MapUpdater = ({ center }) => {
         const map = useMap();
         React.useEffect(() => {
-            if (center) {
+            if (center && center.lat) {
                 map.flyTo([center.lat, center.lng], map.getZoom());
             }
         }, [center, map]);
         return null;
     };
 
-    const MapClickSelector = ({ isDestination }) => {
+    const MapClickSelector = () => {
         useMapEvents({
             async click(e) {
-                const lat = e.latlng.lat;
-                const lng = e.latlng.lng;
+                const { lat, lng } = e.latlng;
                 try {
                     const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
                     const data = await res.json();
                     const address = data?.display_name || `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
                     
-                    if (isDestination) {
+                    if (mapMode === 'destination') {
                         setDestinationLocation({ lat, lng });
                         setFormData(prev => ({ 
                             ...prev, 
@@ -140,20 +197,15 @@ const CreateShipment = () => {
                         }));
                     }
                 } catch (err) {
-                    if (isDestination) {
-                        setDestinationLocation({ lat, lng });
-                        setFormData(prev => ({ ...prev, destinationAddress: `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}` }));
-                    } else {
-                        setPickupLocation({ lat, lng });
-                        setFormData(prev => ({ ...prev, pickupAddress: `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}` }));
-                    }
+                    console.error(err);
                 }
             },
         });
         return null;
     };
-
+    
     const [mapMode, setMapMode] = useState('pickup'); // 'pickup' or 'destination'
+    const [isMapModalOpen, setIsMapModalOpen] = useState(false);
 
     return (
         <div className="max-w-4xl mx-auto pb-10 font-sans">
@@ -285,9 +337,17 @@ const CreateShipment = () => {
                                         required
                                         value={formData.pickupAddress}
                                         onChange={handleInputChange}
-                                        className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="pl-10 pr-12 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                         placeholder="Full address (e.g., Block A, Connaught Place)"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => { setMapMode('pickup'); setIsMapModalOpen(true); }}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-indigo-50 text-indigo-600 rounded-md hover:bg-indigo-100 transition-colors"
+                                        title="Select on Map"
+                                    >
+                                        <Map className="w-5 h-5" />
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -307,9 +367,17 @@ const CreateShipment = () => {
                                             required
                                             value={formData.destinationAddress}
                                             onChange={handleInputChange}
-                                            className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                            className="pl-10 pr-12 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                             placeholder="Map drop-off location"
                                         />
+                                        <button
+                                            type="button"
+                                            onClick={() => { setMapMode('destination'); setIsMapModalOpen(true); }}
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-indigo-50 text-indigo-600 rounded-md hover:bg-indigo-100 transition-colors"
+                                            title="Select on Map"
+                                        >
+                                            <Map className="w-5 h-5" />
+                                        </button>
                                     </div>
                                 </div>
                                 <div>
@@ -326,41 +394,91 @@ const CreateShipment = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* Interactive OpenStreetMap */}
-                    <div className="mt-8 border border-slate-200 p-4 rounded-2xl bg-slate-50">
-                        <div className="flex justify-between items-center mb-4">
-                            <div>
-                                <h3 className="text-sm font-bold text-slate-800">Map Localization (Optional)</h3>
-                                <p className="text-xs text-slate-500">Tap the map to precisely pin your location</p>
-                            </div>
-                            <div className="flex gap-2 bg-white p-1 rounded-lg border border-slate-200">
-                                <button type="button" onClick={() => setMapMode('pickup')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${mapMode==='pickup' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>Set Pickup</button>
-                                <button type="button" onClick={() => setMapMode('destination')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${mapMode==='destination' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>Set Dropoff</button>
-                            </div>
-                        </div>
-                        
-                        <div className="h-[350px] w-full border-2 border-slate-200 rounded-xl overflow-hidden shadow-inner relative z-0">
-                            <MapContainer center={[pickupLocation.lat, pickupLocation.lng]} zoom={11} style={{ width: '100%', height: '100%' }}>
-                                <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" attribution="&copy; OpenStreetMap" />
-                                <MapUpdater center={mapMode === 'destination' ? destinationLocation : pickupLocation} />
-                                <MapClickSelector isDestination={mapMode === 'destination'} />
+                    {/* Map Modal */}
+                    {isMapModalOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                            <div className="bg-white rounded-3xl overflow-hidden w-full max-w-4xl shadow-2xl flex flex-col h-[80vh]">
+                                <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white z-10">
+                                    <div>
+                                        <h3 className="text-xl font-black text-slate-800 flex items-center gap-2">
+                                            <Map className="text-indigo-600" /> Pin Your {mapMode === 'pickup' ? 'Pickup' : 'Dropoff'} Location
+                                        </h3>
+                                        <p className="text-sm text-slate-500 font-medium mt-1">Tap exactly on the map to autofill the address.</p>
+                                    </div>
+                                    <button onClick={() => setIsMapModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500">
+                                        <X size={24} />
+                                    </button>
+                                </div>
                                 
-                                <Marker position={[pickupLocation.lat, pickupLocation.lng]}>
-                                    <Popup>Pickup Location</Popup>
-                                </Marker>
-                                <Marker position={[destinationLocation.lat, destinationLocation.lng]}>
-                                    <Popup>Dropoff Location</Popup>
-                                </Marker>
-                            </MapContainer>
+                                <div className="flex-1 relative z-0">
+                                    <MapContainer 
+                                        center={mapMode === 'destination' ? [destinationLocation.lat, destinationLocation.lng] : [pickupLocation.lat, pickupLocation.lng]} 
+                                        zoom={13} 
+                                        style={{ width: '100%', height: '100%' }}
+                                    >
+                                        <TileLayer 
+                                            url="https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}" 
+                                            subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+                                            attribution="&copy; Google Maps" 
+                                        />
+                                        <MapUpdater center={mapMode === 'destination' ? destinationLocation : pickupLocation} />
+                                        <MapClickSelector />
+                                        
+                                        {mapMode === 'pickup' && (
+                                            <Marker position={[pickupLocation.lat, pickupLocation.lng]}>
+                                                <Popup>Pickup Location</Popup>
+                                            </Marker>
+                                        )}
+                                        {mapMode === 'destination' && (
+                                            <Marker position={[destinationLocation.lat, destinationLocation.lng]}>
+                                                <Popup>Destination Location</Popup>
+                                            </Marker>
+                                        )}
+                                    </MapContainer>
+                                </div>
+                                
+                                <div className="p-6 bg-slate-50 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                                    <div className="flex-1 w-full p-3 bg-white border border-slate-200 rounded-xl shadow-sm">
+                                        <span className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Selected Address</span>
+                                        <span className="font-semibold text-slate-700 truncate block">
+                                            {mapMode === 'pickup' ? formData.pickupAddress : formData.destinationAddress}
+                                        </span>
+                                    </div>
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setIsMapModalOpen(false)}
+                                        className="w-full md:w-auto px-8 py-3.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-200 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                                    >
+                                        <CheckCircle2 size={20} /> Confirm Location
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
 
                 {/* Receiver & Pricing */}
                 <div>
-                    <h2 className="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">3. Delivery Details</h2>
+                    <h2 className="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">3. Delivery & Contact Details</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Your Contact (Sender) *</label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <Phone className="h-5 w-5 text-gray-400" />
+                                </div>
+                                <input
+                                    type="tel"
+                                    name="senderContact"
+                                    required
+                                    value={formData.senderContact}
+                                    onChange={handleInputChange}
+                                    className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="Your Mobile Number"
+                                />
+                            </div>
+                        </div>
+
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Receiver Name *</label>
                             <div className="relative">

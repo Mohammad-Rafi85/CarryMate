@@ -43,6 +43,9 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    com.carrymate.service.MailService mailService;
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -78,6 +81,13 @@ public class AuthController {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
+        }
+
+        // Verify OTP
+        if (!mailService.verifyOtp(signUpRequest.getEmail(), signUpRequest.getOtp())) {
+            return ResponseEntity
+                    .status(401)
+                    .body(new MessageResponse("Error: Invalid or Expired OTP! Try again."));
         }
 
         // Create new user's account

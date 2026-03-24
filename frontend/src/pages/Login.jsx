@@ -38,9 +38,6 @@ const Login = () => {
 
     return (
         <div className="min-h-screen bg-professional flex items-center justify-center p-6">
-            <Link to="/" className="absolute top-10 left-10 flex items-center gap-2 text-slate-500 hover:text-slate-900 font-semibold transition-colors group">
-                <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> Back to Home
-            </Link>
 
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}

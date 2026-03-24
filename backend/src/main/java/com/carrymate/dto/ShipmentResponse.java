@@ -22,6 +22,8 @@ public class ShipmentResponse {
     private Double destinationLat;
     private Double destinationLng;
     private String receiverName;
+    private String senderContact;
+    private String receiverContact;
     private BigDecimal price;
     private Shipment.Status status;
     private LocalDateTime createdAt;
@@ -42,6 +44,8 @@ public class ShipmentResponse {
         this.destinationLat = shipment.getDestinationLat();
         this.destinationLng = shipment.getDestinationLng();
         this.receiverName = shipment.getReceiverName();
+        this.senderContact = shipment.getSenderContact();
+        this.receiverContact = shipment.getReceiverContact();
         this.price = shipment.getPrice();
         this.status = shipment.getStatus();
         this.createdAt = shipment.getCreatedAt();

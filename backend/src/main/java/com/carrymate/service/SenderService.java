@@ -50,7 +50,10 @@ public class SenderService {
         shipment.setDestinationLat(request.getDestinationLat());
         shipment.setDestinationLng(request.getDestinationLng());
         shipment.setReceiverName(request.getReceiverName());
+        shipment.setSenderContact(request.getSenderContact());
+        shipment.setReceiverContact(request.getReceiverContact());
         shipment.setPrice(request.getPrice());
+        shipment.setPaymentId(request.getPaymentId());
         shipment.setStatus(Shipment.Status.PENDING);
         shipment.setCreatedAt(LocalDateTime.now());
 

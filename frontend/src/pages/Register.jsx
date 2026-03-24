@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 import {
     User,
     Mail,
@@ -28,21 +29,61 @@ const Register = () => {
     const { register, loading } = useAuth();
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [step, setStep] = useState(1); // 1: Details, 2: OTP
+    const [otp, setOtp] = useState('');
+    const [isOtpSending, setIsOtpSending] = useState(false);
+    const [isOtpVerified, setIsOtpVerified] = useState(false);
+    const [timer, setTimer] = useState(0);
     const navigate = useNavigate();
+
+    React.useEffect(() => {
+        let interval;
+        if (timer > 0) {
+            interval = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [timer]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleSendOtp = async () => {
+        if (!formData.email) {
+            setError('Please enter your email first.');
+            return;
+        }
+        setIsOtpSending(true);
+        setError('');
+        try {
+            await api.post('/auth/send-otp', { email: formData.email });
+            setStep(2);
+            setTimer(30); // 30 seconds cooldown
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to send OTP.');
+        } finally {
+            setIsOtpSending(false);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (step === 1) {
+            handleSendOtp();
+            return;
+        }
+
+        // Final Step: Verify OTP and Register
         try {
-            await register(formData);
+            await register({ ...formData, otp });
             setSuccess(true);
             setTimeout(() => navigate('/login'), 2000);
         } catch (err) {
-            setError(err.response?.data?.message || 'Registration failed. Try a different username/email.');
+            setError(err.response?.data?.message || 'Invalid OTP or Registration failed.');
         }
     };
 
@@ -104,7 +145,7 @@ const Register = () => {
                                 <CheckCircle2 size={48} />
                             </div>
                             <h2 className="text-3xl font-bold text-slate-900 mb-4">Registration Successful!</h2>
-                            <p className="text-slate-500 font-medium">Welcome Rahul! Redirecting you to sign in...</p>
+                            <p className="text-slate-500 font-medium">Welcome {formData.fullName || formData.username}! Redirecting you to sign in...</p>
                         </motion.div>
                     ) : (
                         <div>
@@ -118,76 +159,127 @@ const Register = () => {
                                     {error}
                                 </div>
                             )}
-
                             <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="flex p-1 bg-slate-50 border border-slate-200 rounded-2xl mb-8">
-                                    <button
-                                        type="button"
-                                        onClick={() => setFormData({ ...formData, userType: 'SENDER' })}
-                                        className={`flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all ${formData.userType === 'SENDER' ? 'bg-white text-indigo-600 shadow-sm border border-slate-100' : 'text-slate-500 hover:text-slate-800'}`}
-                                    >
-                                        I want to Send
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => setFormData({ ...formData, userType: 'TRAVELER' })}
-                                        className={`flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all ${formData.userType === 'TRAVELER' ? 'bg-white text-indigo-600 shadow-sm border border-slate-100' : 'text-slate-500 hover:text-slate-800'}`}
-                                    >
-                                        I am Traveling
-                                    </button>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
-                                    <div className="relative">
-                                        <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                        <input type="text" name="fullName" className="input-group pl-12" placeholder="e.g. Rahul Sharma" value={formData.fullName} onChange={handleChange} required />
-                                    </div>
-                                </div>
-
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-700 ml-1">Username</label>
-                                        <div className="relative">
-                                            <AtSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                            <input type="text" name="username" className="input-group pl-12" placeholder="rahul_s" value={formData.username} onChange={handleChange} required />
+                                {step === 1 ? (
+                                    <>
+                                        <div className="flex p-1 bg-slate-50 border border-slate-200 rounded-2xl mb-8">
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, userType: 'SENDER' })}
+                                                className={`flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all ${formData.userType === 'SENDER' ? 'bg-white text-indigo-600 shadow-sm border border-slate-100' : 'text-slate-500 hover:text-slate-800'}`}
+                                            >
+                                                I want to Send
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, userType: 'TRAVELER' })}
+                                                className={`flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all ${formData.userType === 'TRAVELER' ? 'bg-white text-indigo-600 shadow-sm border border-slate-100' : 'text-slate-500 hover:text-slate-800'}`}
+                                            >
+                                                I am Traveling
+                                            </button>
                                         </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
-                                        <div className="relative">
-                                            <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                            <input type="email" name="email" className="input-group pl-12" placeholder="rahul@email.com" value={formData.email} onChange={handleChange} required />
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-700 ml-1">Secure Password</label>
-                                    <div className="relative">
-                                        <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                        <input
-                                            type={showPassword ? "text" : "password"}
-                                            name="password"
-                                            className="input-group pl-12 pr-12"
-                                            placeholder="••••••••"
-                                            value={formData.password}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600"
-                                        >
-                                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
+                                            <div className="relative">
+                                                <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input type="text" name="fullName" className="input-group pl-12" placeholder="e.g. Rahul Sharma" value={formData.fullName} onChange={handleChange} required />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-bold text-slate-700 ml-1">Username</label>
+                                                <div className="relative">
+                                                    <AtSign size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                    <input type="text" name="username" className="input-group pl-12" placeholder="rahul_s" value={formData.username} onChange={handleChange} required />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
+                                                <div className="relative">
+                                                    <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                    <input type="email" name="email" className="input-group pl-12" placeholder="rahul@email.com" value={formData.email} onChange={handleChange} required />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Secure Password</label>
+                                            <div className="relative">
+                                                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input
+                                                    type={showPassword ? "text" : "password"}
+                                                    name="password"
+                                                    className="input-group pl-12 pr-12"
+                                                    placeholder="••••••••"
+                                                    value={formData.password}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600"
+                                                >
+                                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" className="btn-primary w-full py-4 text-base mt-6 shadow-indigo-100 shadow-xl" disabled={isOtpSending}>
+                                            {isOtpSending ? 'Sending OTP...' : 'Send OTP & Register'}
                                         </button>
-                                    </div>
-                                </div>
+                                    </>
+                                ) : (
+                                    <div className="space-y-6">
+                                        <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-2xl text-indigo-700 text-sm font-medium">
+                                            We've sent a 6-digit verification code to <strong>{formData.email}</strong>. Please enter it below.
+                                        </div>
+                                        
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-slate-700 ml-1">Verification Code</label>
+                                            <div className="relative">
+                                                <Shield size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input 
+                                                    type="text" 
+                                                    maxLength="6"
+                                                    className="input-group pl-12 tracking-[1em] font-black text-xl text-center" 
+                                                    placeholder="000000" 
+                                                    value={otp} 
+                                                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))} 
+                                                    required 
+                                                />
+                                            </div>
+                                        </div>
 
-                                <button type="submit" className="btn-primary w-full py-4 text-base mt-6 shadow-indigo-100 shadow-xl" disabled={loading}>
-                                    {loading ? 'Creating Profile...' : 'Register Account'}
-                                </button>
+                                        <button type="submit" className="btn-primary w-full py-4 text-base mt-2 shadow-indigo-100 shadow-xl" disabled={loading}>
+                                            {loading ? 'Verifying...' : 'Verify & Create Account'}
+                                        </button>
+
+                                        <div className="flex justify-between items-center mt-4 px-1">
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setStep(1)}
+                                                className="text-slate-400 text-xs font-bold hover:text-slate-600 transition-colors uppercase tracking-wider"
+                                            >
+                                                Edit Email
+                                            </button>
+
+                                            {timer > 0 ? (
+                                                <span className="text-slate-400 text-xs font-bold">Resend in {timer}s</span>
+                                            ) : (
+                                                <button 
+                                                    type="button" 
+                                                    onClick={handleSendOtp}
+                                                    className="text-indigo-600 text-xs font-bold hover:underline uppercase tracking-wider"
+                                                >
+                                                    Resend OTP
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </form>
 
                             <div className="mt-12 text-center font-bold text-sm pt-8 border-t border-slate-100">

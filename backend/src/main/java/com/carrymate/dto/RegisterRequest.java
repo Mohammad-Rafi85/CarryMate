@@ -24,4 +24,6 @@ public class RegisterRequest {
     
     @NotBlank
     private String userType;
+
+    private String otp;
 }

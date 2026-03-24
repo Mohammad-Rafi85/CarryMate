@@ -26,7 +26,7 @@ const ContactUs = () => {
         e.preventDefault();
 
         // Prepare mailto link with developer's email
-        const targetEmail = "shaikmirchimohammadrafi@gmail.com";
+        const targetEmail = "carrymate@gmail.com";
         const bodyContent = `Name: ${formState.name}%0AEmail: ${formState.email}%0A%0AMessage:%0A${formState.message}`;
         const mailtoLink = `mailto:${targetEmail}?subject=${encodeURIComponent(formState.subject)}&body=${bodyContent}`;
 
@@ -54,7 +54,7 @@ const ContactUs = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white text-slate-900 selection:bg-indigo-100 selection:text-indigo-900 font-sans">
+        <div className="min-h-screen text-slate-900 selection:bg-indigo-100 selection:text-indigo-900 font-sans bg-slate-50 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-indigo-50/50 via-slate-50 to-white">
             {/* Header Section */}
             <section className="relative pt-32 pb-20 overflow-hidden bg-professional">
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
@@ -95,13 +95,13 @@ const ContactUs = () => {
                             {
                                 icon: <Mail className="text-indigo-600" />,
                                 title: "Email Support",
-                                detail: "support@carrymate.io",
+                                detail: "carrymate@gmail.com",
                                 desc: "Our response time is under 12 hours."
                             },
                             {
                                 icon: <Phone className="text-indigo-600" />,
                                 title: "Phone Line",
-                                detail: "+91 800-CARRY-MATE",
+                                detail: "+91 8978826008",
                                 desc: "Available Mon-Fri, 9am - 6pm IST."
                             },
                             {
@@ -178,8 +178,6 @@ const ContactUs = () => {
                                     </h3>
                                     <p className="text-indigo-100/80 mb-6 font-medium">Our India-wide network is monitored 24/7 for maximum delivery security and user trust.</p>
                                     <div className="flex items-center gap-4 text-sm font-bold uppercase tracking-widest text-indigo-300">
-                                        <span className="flex items-center gap-1"><Globe size={14} /> 28 States</span>
-                                        <span className="w-1 h-1 bg-indigo-500 rounded-full" />
                                         <span>12k+ Verified Users</span>
                                     </div>
                                 </div>
@@ -270,7 +268,7 @@ const ContactUs = () => {
                 <div className="max-w-5xl mx-auto bg-slate-900 rounded-[50px] p-12 md:p-24 text-center text-white relative overflow-hidden shadow-2xl">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full" />
                     <div className="relative z-10">
-                        <h2 className="text-4xl md:text-5xl font-bold mb-8">Need immediate help?</h2>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-8 relative z-50 text-white">Need immediate help?</h2>
                         <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">Check our detailed documentation or speak with our live chat agents in the dashboard.</p>
                         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                             <Link to="/help-center" className="btn-primary px-12 py-5 text-xl w-full sm:w-auto">Open Help Center</Link>

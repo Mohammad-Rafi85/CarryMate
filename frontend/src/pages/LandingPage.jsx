@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 
 const LandingPage = () => {
     return (
-        <div className="bg-white min-h-screen text-slate-900 selection:bg-indigo-100 selection:text-indigo-900">
+        <div className="min-h-screen text-slate-900 selection:bg-indigo-100 selection:text-indigo-900 bg-slate-50 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-100/40 via-slate-50 to-white">
             {/* Hero Section */}
             <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-professional">
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -71,12 +71,11 @@ const LandingPage = () => {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4, duration: 1 }}
-                        className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto border-t border-slate-100 pt-12"
+                        className="mt-24 grid grid-cols-2 md:grid-cols-3 gap-8 max-w-3xl mx-auto border-t border-slate-100 pt-12"
                     >
                         {[
                             { label: 'Verified Travelers', val: '12k+' },
-                            { label: 'States Covered', val: '28' },
-                            { label: 'Fastest Delivery', val: '4h' },
+                            { label: 'Fastest Delivery', val: '20 mins' },
                             { label: 'Carbon Saved', val: '40%' }
                         ].map((stat, i) => (
                             <div key={i} className="text-center">
@@ -131,7 +130,7 @@ const LandingPage = () => {
             </section>
 
             {/* Human Element Section */}
-            <section className="py-32 px-6 relative overflow-hidden bg-white">
+            <section className="py-32 px-6 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
                     <div>
                         <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-8 tracking-tight">The logistics network with a human touch.</h2>
@@ -168,7 +167,7 @@ const LandingPage = () => {
                 <div className="max-w-5xl mx-auto bg-slate-900 rounded-[50px] p-12 md:p-24 text-center text-white relative overflow-hidden shadow-2xl">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full" />
                     <div className="relative z-10">
-                        <h2 className="text-4xl md:text-6xl font-bold mb-8">Ready to join the network?</h2>
+                        <h2 className="text-4xl md:text-6xl font-bold mb-8 relative z-50 text-white">Ready to join the network?</h2>
                         <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">Join thousands of verified users across India simplifying delivery through shared journeys.</p>
                         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                             <Link to="/register" className="btn-primary px-12 py-5 text-xl w-full sm:w-auto">Register Now</Link>
@@ -179,7 +178,7 @@ const LandingPage = () => {
             </section>
 
             {/* Footer */}
-            <footer className="py-20 px-6 border-t border-slate-100 bg-white">
+            <footer className="py-20 px-6 border-t border-slate-200">
                 <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-16">
                     <div className="col-span-1 md:col-span-2">
                         <div className="flex items-center gap-2 mb-8">

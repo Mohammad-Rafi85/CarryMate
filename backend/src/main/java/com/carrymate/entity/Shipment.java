@@ -52,8 +52,14 @@ public class Shipment {
     @Column(nullable = false)
     private String receiverName;
 
+    private String senderContact;
+    
+    private String receiverContact;
+
     @Column(nullable = false)
     private BigDecimal price;
+
+    private String paymentId;
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.PENDING;

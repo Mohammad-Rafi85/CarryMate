@@ -24,5 +24,9 @@ public class CreateShipmentRequest {
     private Double destinationLng;
 
     private String receiverName;
+    private String senderContact;
+    private String receiverContact;
     private BigDecimal price;
+    private String paymentId;
+
 }

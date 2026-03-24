@@ -94,8 +94,8 @@ const AdminDashboard = () => {
             {/* Sidebar */}
             <div className="w-64 bg-slate-900 text-white flex flex-col">
                 <div className="h-20 flex items-center px-8 border-b border-slate-800">
-                    <ShieldCheck className="w-8 h-8 text-indigo-500 mr-3" />
-                    <h1 className="text-xl font-black tracking-tight mt-1">CarryMate Admin</h1>
+                    <ShieldCheck className="w-8 h-8 text-indigo-500 mr-3 shrink-0" />
+                    <h1 className="text-xl font-black tracking-tight mt-1 truncate">CarryMate Admin</h1>
                 </div>
                 <div className="flex-1 overflow-y-auto py-6 flex flex-col gap-2 px-4">
                     <button 

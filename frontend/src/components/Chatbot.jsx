@@ -71,7 +71,7 @@ const Chatbot = () => {
         setMessages(prev => [...prev, { id: Date.now(), text: `Dispute ${newDispute.id} has been securely logged and forwarded to our admins for immediate review.`, isBot: true }]);
     };
 
-    if (!isAuthenticated || window.location.pathname.includes('/admin')) return null;
+    if (window.location.pathname.includes('/admin')) return null;
 
     return (
         <div className="fixed bottom-6 right-6 z-50 font-sans">

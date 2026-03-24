@@ -26,21 +26,14 @@ const Navbar = () => {
 
     const isSender = user?.userType === 'SENDER';
 
-    const navLinks = [
-        { name: 'How it Works', path: isSender ? '/how-it-works-sender' : '#how-it-works' }
-    ];
-
-    if (!isSender) {
-        navLinks.push({ name: 'Deliveries', path: '/find-deliveries' });
-        navLinks.push({ name: 'Trips', path: '/post-trip' });
-    }
+    const navLinks = [];
 
     if (isAuthenticated) {
         navLinks.unshift({ name: 'Dashboard', path: '/dashboard' });
     }
 
     // Hide global marketing navbar when inside the dashboard layouts
-    if (location.pathname.startsWith('/sender') || location.pathname.startsWith('/traveller')) {
+    if (location.pathname.startsWith('/sender') || location.pathname.startsWith('/traveller') || location.pathname.startsWith('/admin')) {
         return null;
     }
 
