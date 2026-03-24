@@ -2,19 +2,15 @@ import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { Package, Truck, MapPin, Search, Plus, Calendar, Weight, ArrowRight, User, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
-<<<<<<< HEAD
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-=======
-import { Link } from 'react-router-dom';
 import PostDeliveryModal from './PostDeliveryModal';
->>>>>>> fff9d68e72e3e06cdf03555325be188e60fe8b01
 
 const Dashboard = () => {
     const [deliveries, setDeliveries] = useState([]);
     const [trips, setTrips] = useState([]);
     const [loading, setLoading] = useState(true);
-<<<<<<< HEAD
+    const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
     
     // Get user from auth context to check role
     const { user } = useAuth();
@@ -22,9 +18,6 @@ const Dashboard = () => {
     if (user?.userType === 'SENDER') {
         return <Navigate to="/sender/my-shipments" replace />;
     }
-=======
-    const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
->>>>>>> fff9d68e72e3e06cdf03555325be188e60fe8b01
 
     useEffect(() => {
         const fetchData = async () => {

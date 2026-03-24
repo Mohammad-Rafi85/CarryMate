@@ -74,7 +74,6 @@ function App() {
               <Route path="/post-delivery" element={<ProtectedRoute><PostDelivery /></ProtectedRoute>} />
               <Route path="/post-trip" element={<ProtectedRoute><PostTrip /></ProtectedRoute>} />
               <Route path="/find-deliveries" element={<ProtectedRoute><MatchResults /></ProtectedRoute>} />
-<<<<<<< HEAD
               <Route path="/how-it-works-sender" element={<ProtectedRoute><HowItWorksSender /></ProtectedRoute>} />
               
               {/* Sender Routes */}
@@ -101,9 +100,6 @@ function App() {
               {/* Admin Routes */}
               <Route path="/admin" element={<AdminDashboard />} />
 
-=======
-              <Route path="/traveller" element={<ProtectedRoute><TravellerPortal /></ProtectedRoute>} />
->>>>>>> fff9d68e72e3e06cdf03555325be188e60fe8b01
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
             {/* Global AI Chat Support */}
