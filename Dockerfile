@@ -1,11 +1,17 @@
 # --- Stage 1: Build the React Frontend ---
 FROM node:18 AS frontend-build
 WORKDIR /app/frontend
-# Copy package files
-COPY frontend/package*.json ./
-# Clean install - ignore local lockfile if it's causing platform issues
+
+# Install common build tools for native modules (esbuild, etc)
+RUN apt-get update && apt-get install -y python3 make g++ 
+
+# Copy package files (we will NOT copy package-lock.json from local to avoid architecture issues)
+COPY frontend/package.json ./
+
+# RUN clean install inside the container
 RUN npm install
-# Copy frontend source and build
+
+# Copy frontend source and build (ignore node_modules via .dockerignore)
 COPY frontend/ ./
 RUN npm run build
 
