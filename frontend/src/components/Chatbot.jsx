@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, ShieldAlert, Bot, User } from 'lucide-react';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { MessageSquare, X, Send, ShieldAlert, Bot } from 'lucide-react';
+import api from '../api/axios'; // Use our centralized axios instance
 import { useAuth } from '../context/AuthContext';
-
-const genAI = new GoogleGenerativeAI("AIzaSyBi-le53QnJmumcP3GUFsb4tZqlcSnJHpk");
 
 const Chatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +12,7 @@ const Chatbot = () => {
     const [loading, setLoading] = useState(false);
     const [reportingDispute, setReportingDispute] = useState(false);
     const [disputeData, setDisputeData] = useState({ issue: '', against: '' });
-    const { user, isAuthenticated } = useAuth();
+    const { user } = useAuth();
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -35,16 +33,15 @@ const Chatbot = () => {
         setLoading(true);
 
         try {
-            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-            const prompt = `You are the customer support assistant for CarryMate, a P2P micro-delivery platform connecting Senders and Travellers. Be helpful, professional, and concise. The user is asking: ${userMsg}`;
-            const result = await model.generateContent(prompt);
-            const responseText = result.response.text();
+            // Updated to call backend instead of direct Google API
+            const response = await api.post('/chat', { message: userMsg });
+            const responseText = response.data.response;
 
             setMessages(prev => [...prev, { id: Date.now(), text: responseText, isBot: true }]);
         } catch (error) {
-            console.error("Gemini Error:", error);
-            const errMsg = error?.message || error?.toString() || "Unknown error";
-            setMessages(prev => [...prev, { id: Date.now(), text: `Error connecting to Gemini API: ${errMsg}. Please ensure the API key is active.`, isBot: true }]);
+            console.error("Chat Error:", error);
+            const errMsg = error.response?.data?.message || "Failed to connect to AI server. Please try again.";
+            setMessages(prev => [...prev, { id: Date.now(), text: `Error: ${errMsg}`, isBot: true }]);
         } finally {
             setLoading(false);
         }
@@ -74,7 +71,7 @@ const Chatbot = () => {
     if (window.location.pathname.includes('/admin')) return null;
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 font-sans">
+        <div className="fixed bottom-6 right-6 z-50 font-sans text-slate-800">
             {/* Chat Window */}
             {isOpen && (
                 <div className="absolute bottom-16 right-0 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col h-[500px]">
