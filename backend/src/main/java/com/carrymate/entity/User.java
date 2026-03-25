@@ -50,6 +50,6 @@ public class User {
     }
 
     public enum UserType {
-        SENDER, TRAVELER
+        SENDER, TRAVELER, ADMIN
     }
 }

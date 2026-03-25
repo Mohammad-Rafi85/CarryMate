@@ -8,6 +8,7 @@ import LoginTraveler from './pages/LoginTraveler';
 import Register from './pages/Register';
 import RegisterSender from './pages/RegisterSender';
 import RegisterTraveler from './pages/RegisterTraveler';
+import RegisterAdmin from './pages/RegisterAdmin';
 import Dashboard from './pages/Dashboard';
 import Chatbot from './components/Chatbot';
 import PostDelivery from './pages/PostDelivery';
@@ -66,6 +67,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/register/sender" element={<RegisterSender />} />
               <Route path="/register/traveler" element={<RegisterTraveler />} />
+              <Route path="/register/admin" element={<RegisterAdmin />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/contact" element={<ContactUs />} />

@@ -97,12 +97,20 @@ public class AuthController {
         user.setPassword(encoder.encode(signUpRequest.getPassword()));
         user.setFullName(signUpRequest.getFullName());
         user.setPhoneNumber(signUpRequest.getPhoneNumber());
-        user.setRole(User.Role.USER);
-        
+        // Set basic role and type
         try {
-            user.setUserType(User.UserType.valueOf(signUpRequest.getUserType().toUpperCase()));
+            User.UserType selectedType = User.UserType.valueOf(signUpRequest.getUserType().toUpperCase());
+            user.setUserType(selectedType);
+            
+            // Assign ADMIN role if requested, otherwise USER
+            if (selectedType == User.UserType.ADMIN) {
+                user.setRole(User.Role.ADMIN);
+            } else {
+                user.setRole(User.Role.USER);
+            }
         } catch (Exception e) {
-            user.setUserType(User.UserType.SENDER); // Default
+            user.setUserType(User.UserType.SENDER);
+            user.setRole(User.Role.USER);
         }
 
         userRepository.save(user);
